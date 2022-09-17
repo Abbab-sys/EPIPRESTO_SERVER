@@ -1,0 +1,46 @@
+type HttpResponse{
+    code:Int!
+    message:String!
+}
+union VendorLoginResult=VendorAccount|Error
+
+type Error{
+    message:String
+}
+type VendorAccount{
+    id:ID!
+    email:String!
+    phone:String!
+    username:String!
+    store:Store!
+}
+type Product{
+    id:ID!
+    title:String!
+    brand:String
+    vendor:Store!
+    published:Boolean!
+    price:Float!
+    sku:String
+    taxable:Boolean!
+    imageSrc:String
+    format:String
+    byWeight:Boolean!
+    stock:Int!
+    tags:[String!]!
+}
+type Store{
+    id:ID!
+    name:String!
+    adress:String!
+    products:[Product!]!
+    disponibilities:[Disponibility!]!
+}
+type Disponibility{
+    day:Day!
+    activesHours:[ActivesHours!]!
+}
+type ActivesHours{
+    openingHour:String!
+    endingHour:String!
+}
