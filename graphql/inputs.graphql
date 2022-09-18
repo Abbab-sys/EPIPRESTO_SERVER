@@ -1,8 +1,0 @@
-input VendorAccountInput{
-    shopName:String!
-    adress:String!
-    email:String!
-    phone:String!
-    username:String!
-    password:String!
-}

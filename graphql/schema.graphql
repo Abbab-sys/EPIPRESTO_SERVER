@@ -1,9 +1,74 @@
+input VendorAccountInput{
+    shopName:String!
+    address:String!
+    email:String!
+    phone:String!
+    username:String!
+    password:String!
+}
+
+type HttpResponse{
+    code:Int!
+    message:String!
+}
+
+type VendorAccount{
+    _id:ID!
+    email:String!
+    password:String!
+    phone:String!
+    username:String!
+    store:Store!
+}
+type Product{
+    _id:ID!
+    title:String!
+    brand:String
+    vendor:Store!
+    published:Boolean!
+    price:Float!
+    sku:String
+    taxable:Boolean!
+    imageSrc:String
+    format:String
+    byWeight:Boolean!
+    stock:Int!
+    tags:[String!]!
+}
+type Store{
+    _id:ID!
+    name:String!
+    adress:String!
+    products:[Product!]!
+    disponibilities:[Disponibility!]!
+}
+type Disponibility{
+    day:Day!
+    activesHours:[ActivesHours!]!
+}
+type ActivesHours{
+    openingHour:String!
+    endingHour:String!
+}
+
+enum ApiType{
+    SHOPIFY,
+    WOOCOMMERCE
+}
+enum Day{
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY
+}
+
 type Query{
-    loginVendor(email:String!,password:String!):VendorLoginResult!
+    loginVendor(email:String!,password:String!):VendorAccount
 }
 type Mutation{
-    vendorSignUp(accountInput:VendorAccountInput):VendorLoginResult
-    synchronizeStore(apiType:ApiType!,apiToken:String!):HttpResponse
+    vendorSignUp(accountInput:VendorAccountInput):VendorAccount
+    synchronizeStore(apiType:ApiType!,apiToken:String!):HttpResponse!
 }
-
-
