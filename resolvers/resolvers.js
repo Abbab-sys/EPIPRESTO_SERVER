@@ -11,8 +11,8 @@ const resolvers = {
         },
     },
     Query: {
-        loginVendor: (_, args, {dataSources: {vendors}}) => {
-            const accountsFound = vendors.loginByEmail(args.email, args.password)
+        loginVendor: async (_, args, {dataSources: {vendors}}) => {
+            const accountsFound = await vendors.loginByEmail(args.email, args.password)
             if (accountsFound.length !== 1) return null
             return accountsFound[0]
         },
