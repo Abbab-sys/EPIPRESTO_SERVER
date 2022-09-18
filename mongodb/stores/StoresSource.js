@@ -4,7 +4,7 @@ export default class StoresSource extends MongoDataSource {
     async createNewStore(shopName, shopAddress) {
         return (await this.collection.insertOne({
             name: shopName,
-            adress: shopAddress,
+            address: shopAddress,
             products: [],
             disponibilities: []
         })).insertedId

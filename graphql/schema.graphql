@@ -24,7 +24,7 @@ type Product{
     _id:ID!
     title:String!
     brand:String
-    vendor:Store!
+    vendorId:ID!
     published:Boolean!
     price:Float!
     sku:String
@@ -38,7 +38,7 @@ type Product{
 type Store{
     _id:ID!
     name:String!
-    adress:String!
+    address:String!
     products:[Product!]!
     disponibilities:[Disponibility!]!
 }
