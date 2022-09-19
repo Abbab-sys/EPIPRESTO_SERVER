@@ -24,6 +24,7 @@
     "apollo-server-core": "^3.10.2",
     "graphql": "^16.6.0",
     "graphql-import": "^1.0.2",
+    "graphql-request": "^5.0.0",
     "mongodb": "^4.9.1"
   }
 }

@@ -9,7 +9,7 @@ const resolvers = {
             try {
                 user = JSON.parse(user)
             } catch (e) {
-                return {code: 500, message: "Invalid Credentials"}
+                return {code: 500, message: e.message}
             }
             const apiType = args.apiType
             const apiToken = args.apiToken
@@ -28,6 +28,5 @@ const resolvers = {
             return await stores.getStoreById(parent.storeId)
         }
     },
-
 };
 export {resolvers}
