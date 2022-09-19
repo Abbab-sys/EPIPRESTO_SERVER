@@ -20,7 +20,7 @@ const server = new ApolloServer({
     cache: 'bounded',
     context: ({req}) => ({
         // get the user token from the headers
-        user:  JSON.parse(req.headers.authorization) || {storeId:null}
+        user:  req.headers.authorization || ''
     }),
     dataSources: () => ({
         vendors: new VendorsSource(client.db("Epipresto-dev").collection('Vendors')),
