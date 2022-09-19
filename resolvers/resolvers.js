@@ -5,6 +5,16 @@ const resolvers = {
             const newStoreId = await stores.createNewStore(vendorAccountInput.shopName, vendorAccountInput.address)
             return await vendors.signUp({...vendorAccountInput, storeId: newStoreId})
         },
+        synchronizeStore: async (parent, args, {user, dataSources: {stores}}) => {
+            try {
+                user = JSON.parse(user)
+            } catch (e) {
+                return {code: 500, message: "Invalid Credentials"}
+            }
+            const apiType = args.apiType
+            const apiToken = args.apiToken
+            return await stores.addSynchronizationToStore(user.storeId, apiType, apiToken)
+        },
     },
     Query: {
         loginVendor: async (_, args, {dataSources: {vendors}}) => {
@@ -18,5 +28,6 @@ const resolvers = {
             return await stores.getStoreById(parent.storeId)
         }
     },
+
 };
 export {resolvers}

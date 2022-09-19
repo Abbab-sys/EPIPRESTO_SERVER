@@ -18,6 +18,10 @@ const server = new ApolloServer({
     resolvers,
     csrfPrevention: true,
     cache: 'bounded',
+    context: ({req}) => ({
+        // get the user token from the headers
+        user:  req.headers.authorization || ''
+    }),
     dataSources: () => ({
         vendors: new VendorsSource(client.db("Epipresto-dev").collection('Vendors')),
         stores: new StoresSource(client.db("Epipresto-dev").collection('Stores'))
@@ -26,6 +30,7 @@ const server = new ApolloServer({
         ApolloServerPluginLandingPageLocalDefault({embed: true}),
     ],
 })
+
 server.listen().then(({url}) => {
     console.log(`🚀  Server ready at ${url}`);
 });
