@@ -70,5 +70,14 @@ type Query{
 }
 type Mutation{
     vendorSignUp(accountInput:VendorAccountInput):VendorAccount
-    synchronizeStore(apiType:ApiType!,apiToken:String!):HttpResponse!
+    synchronizeWoocommerceStore(woocommerceCreds:WoocommerceCredentials!):HttpResponse!
+    synchronizeShopifyStore(shopifyCreds:ShopifyCredentials!):HttpResponse!
+}
+input ShopifyCredentials{
+    apiToken:String!
+    shopDomain:String!
+}
+input WoocommerceCredentials{
+    apiToken:String!
+    shopDomain:String!
 }

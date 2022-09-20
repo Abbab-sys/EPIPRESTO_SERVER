@@ -5,16 +5,29 @@ const resolvers = {
             const newStoreId = await stores.createNewStore(vendorAccountInput.shopName, vendorAccountInput.address)
             return await vendors.signUp({...vendorAccountInput, storeId: newStoreId})
         },
-        synchronizeStore: async (parent, args, {user, dataSources: {stores}}) => {
+        synchronizeWoocommerceStore: async (parent, args, {user, dataSources: {stores}}) => {
             try {
                 user = JSON.parse(user)
             } catch (e) {
                 return {code: 500, message: e.message}
             }
-            const apiType = args.apiType
-            const apiToken = args.apiToken
-            return await stores.addSynchronizationToStore(user.storeId, apiType, apiToken)
+            const woocommerceCreds=args.woocommerceCreds
+            const apiToken = woocommerceCreds.apiToken
+            const shopDomain = woocommerceCreds.shopDomain
+            return await stores.addWoocommerceSyncToStore(user.storeId,apiToken,shopDomain)
         },
+        synchronizeShopifyStore: async (parent, args, {user, dataSources: {stores}}) => {
+            try {
+                user = JSON.parse(user)
+            } catch (e) {
+                return {code: 500, message: e.message}
+            }
+            const shopifyCreds=args.shopifyCreds
+            const apiToken = shopifyCreds.apiToken
+            const shopDomain = shopifyCreds.shopDomain
+            return await stores.addShopifySyncToStore(user.storeId, apiToken,shopDomain)
+        },
+
     },
     Query: {
         loginVendor: async (_, args, {dataSources: {vendors}}) => {

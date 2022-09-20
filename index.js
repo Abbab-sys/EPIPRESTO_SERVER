@@ -5,6 +5,7 @@ import {MongoClient} from "mongodb";
 import VendorsSource from "./mongodb/vendors/VendorsSource.js";
 import StoresSource from "./mongodb/stores/StoresSource.js";
 import {ApolloServerPluginLandingPageLocalDefault} from "apollo-server-core";
+import {syncShopifyProducts} from "./sync/SyncInventory.js";
 
 
 const typeDefs = importSchema('./graphql/schema.graphql')
@@ -20,7 +21,7 @@ const server = new ApolloServer({
     cache: 'bounded',
     context: ({req}) => ({
         // get the user token from the headers
-        user:  req.headers.authorization || ''
+        user: req.headers.authorization || ''
     }),
     dataSources: () => ({
         vendors: new VendorsSource(client.db("Epipresto-dev").collection('Vendors')),
@@ -33,4 +34,6 @@ const server = new ApolloServer({
 
 server.listen().then(({url}) => {
     console.log(`🚀  Server ready at ${url}`);
+    setInterval(syncShopifyProducts, 10000, client);
+
 });

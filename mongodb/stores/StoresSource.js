@@ -10,14 +10,43 @@ export default class StoresSource extends MongoDataSource {
             disponibilities: []
         })).insertedId
     }
-    async addSynchronizationToStore(storeId,apiType,apiToken) {
-        const query = { _id: new ObjectId(storeId) };
-        const synchronizationValues = { $set: {apiType: apiType, apiToken: apiToken } };
-        const mongoResponse= await(this.collection.updateOne(query, synchronizationValues))
-        if(mongoResponse.matchedCount)return {code:200,message:"Synchronization parametrized"}
-        return {code:406,message:"MongoDB update failed"};
+
+    async addShopifySyncToStore(storeId, apiToken, shopDomain) {
+        const query = {_id: new ObjectId(storeId)};
+        const synchronizationValues = {
+            $set: {
+                apiType: "SHOPIFY",
+                shopifyShopDomain: shopDomain,
+                shopifyApiToken: apiToken
+            }
+        };
+        const mongoResponse = await (this.collection.updateOne(query, synchronizationValues))
+        if (mongoResponse.matchedCount) return {code: 200, message: "Synchronization parametrized"}
+        return {code: 406, message: "MongoDB update failed"};
     }
+
+    async addWoocommerceSyncToStore(storeId, apiToken, shopDomain) {
+        const query = {_id: new ObjectId(storeId)};
+        const synchronizationValues = {
+            $set: {
+                apiType: "WOOCOMMERCE",
+                woocommerceShopDomain: shopDomain,
+                woocommerceApiToken: apiToken
+            }
+        };
+        const mongoResponse = await (this.collection.updateOne(query, synchronizationValues))
+        if (mongoResponse.matchedCount) return {code: 200, message: "Synchronization parametrized"}
+        return {code: 406, message: "MongoDB update failed"};
+    }
+
     async getStoreById(id) {
         return await this.findOneById(id)
     }
+
+    async findStoresToSynchronize() {
+        return await this.findByFields({
+            apiType: ['SHOPIFY', 'WOOCOMMERCE'] // TODO add this to a global const
+        })
+    }
+
 }

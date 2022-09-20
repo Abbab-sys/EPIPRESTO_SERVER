@@ -1,69 +1,75 @@
 import {GraphQLClient, gql} from 'graphql-request'
+import StoresSource from "../mongodb/stores/StoresSource.js";
 
-async function main() {
-    const endpoint = 'https://projet4-8301.myshopify.com/admin/api/2022-07/graphql.json'
+async function syncShopifyProducts(mongoClient) {
+    const storesSource = new StoresSource(mongoClient.db("Epipresto-dev").collection('Stores'))
+    const storesToSync = await storesSource.findStoresToSynchronize()
+    for (const store of storesToSync) {
+        if (!store.shopifyShopDomain) continue
+        const shopifyShopDomain = store.shopifyShopDomain
+        const shopifyEndpoint=shopifyShopDomain+"/admin/api/2022-07/graphql.json"
+        const shopifyToken=store.shopifyApiToken
 
-    const graphQLClient = new GraphQLClient(endpoint, {
-        headers: {
-            "X-Shopify-Access-Token": "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"
-        },
-    })
+        const graphQLClient = new GraphQLClient(shopifyEndpoint, {
+            headers: {
+                "X-Shopify-Access-Token": shopifyToken
+            },
+        })
+        const query = gql`
+            query getProducts{
+                products(first: 10, reverse: true) {
+                    edges {
+                        node {
+                            id
+                            title
+                            vendor
+                            tags
+                            hasOnlyDefaultVariant
+                            variants (first:10){
+                                edges{
+                                    node{
+                                        id
+                                        displayName
+                                        sku
+                                        price
+                                        taxable
+                                        image{
+                                            url
+                                        }
+                                        weight
+                                        inventoryQuantity
+                                        availableForSale
 
-    const query = gql`
-        query getProducts{
-            products(first: 10, reverse: true) {
-                edges {
-                    node {
-                        id
-                        title
-                        vendor
-                        tags
-                        hasOnlyDefaultVariant
-                        variants (first:10){
-                            edges{
-                                node{
-                                    id
-                                    displayName
-                                    sku
-                                    price
-                                    taxable
-                                    image{
+                                    }
+                                }
+                            }
+                            images(first:10){
+                                edges{
+                                    node{
                                         url
                                     }
-                                    weight
-                                    inventoryQuantity
-                                    availableForSale
+                                }
+                            }
+                            featuredImage{
+                                url
+                            }
+                            images(first:10){
+                                edges{
+                                    node{
+                                        id
+                                        url
+                                    }
+                                }
+                            }
+                        }
 
-                                }
-                            }
-                        }
-                        images(first:10){
-                            edges{
-                                node{
-                                    url
-                                }
-                            }
-                        }
-                        featuredImage{
-                            url
-                        }
-                        images(first:10){
-                            edges{
-                                node{
-                                    id
-                                    url
-                                }
-                            }
-                        }
                     }
-
                 }
             }
-        }
-    `
-
-    const data = await graphQLClient.request(query)
-    console.log(JSON.stringify(data, undefined, 2))
+        `
+        const data = await graphQLClient.request(query)
+        console.log(JSON.stringify(data, undefined, 2))
+    }
 }
 
-main().catch((error) => console.error(error))
+export {syncShopifyProducts}
