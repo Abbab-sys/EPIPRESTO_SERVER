@@ -44,9 +44,9 @@ export default class StoresSource extends MongoDataSource {
     }
 
     async findStoresToSynchronize() {
-        return await this.findByFields({
-            apiType: ['SHOPIFY', 'WOOCOMMERCE'] // TODO add this to a global const
-        })
+        return await this.collection.find({
+            apiType: {"$in": ["SHOPIFY","WOOCOMMERCE"]} // TODO add this to a global const
+        }).toArray();
     }
 
 }
