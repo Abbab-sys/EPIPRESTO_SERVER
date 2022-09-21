@@ -5,7 +5,7 @@ import {MongoClient} from "mongodb";
 import VendorsSource from "./mongodb/vendors/VendorsSource.js";
 import StoresSource from "./mongodb/stores/StoresSource.js";
 import {ApolloServerPluginLandingPageLocalDefault} from "apollo-server-core";
-import {syncShopifyProducts} from "./sync/SyncInventory.js";
+import {syncProducts} from "./sync/SyncInventory.js";
 import ProductsSource from "./mongodb/products/ProductsSource.js";
 import ProductsVariantsSource from "./mongodb/products-variants/ProductsVariantsSource.js";
 
@@ -39,6 +39,6 @@ const server = new ApolloServer({
 
 server.listen().then(({url}) => {
     console.log(`🚀  Server ready at ${url}`);
-    setInterval(syncShopifyProducts, 10000, client);
+    setInterval(syncProducts, 10000, client);
 
 });
