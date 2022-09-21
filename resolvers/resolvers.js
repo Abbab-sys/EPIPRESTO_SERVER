@@ -36,6 +36,9 @@ const resolvers = {
         getProductVariantById: async (_, args, {dataSources: {productsVariants}}) => {
             return await productsVariants.findOneById(args.idVariant)
         },
+        getProductById: async (_, args, {dataSources: {products}}) => {
+            return await products.findOneById(args.idProduct)
+        },
         loginVendor: async (_, args, {dataSources: {vendors}}) => {
             const accountsFound = await vendors.loginByEmail(args.email, args.password)
             if (accountsFound.length !== 1) return null
