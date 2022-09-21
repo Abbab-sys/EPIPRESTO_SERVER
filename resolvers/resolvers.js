@@ -11,10 +11,10 @@ const resolvers = {
             } catch (e) {
                 return {code: 500, message: e.message}
             }
-            const woocommerceCreds=args.woocommerceCreds
+            const woocommerceCreds = args.woocommerceCreds
             const apiToken = woocommerceCreds.apiToken
             const shopDomain = woocommerceCreds.shopDomain
-            return await stores.addWoocommerceSyncToStore(user.storeId,apiToken,shopDomain)
+            return await stores.addWoocommerceSyncToStore(user.storeId, apiToken, shopDomain)
         },
         synchronizeShopifyStore: async (parent, args, {user, dataSources: {stores}}) => {
             try {
@@ -22,10 +22,10 @@ const resolvers = {
             } catch (e) {
                 return {code: 500, message: e.message}
             }
-            const shopifyCreds=args.shopifyCreds
+            const shopifyCreds = args.shopifyCreds
             const apiToken = shopifyCreds.apiToken
             const shopDomain = shopifyCreds.shopDomain
-            return await stores.addShopifySyncToStore(user.storeId, apiToken,shopDomain)
+            return await stores.addShopifySyncToStore(user.storeId, apiToken, shopDomain)
         },
 
     },
@@ -34,6 +34,14 @@ const resolvers = {
             const accountsFound = await vendors.loginByEmail(args.email, args.password)
             if (accountsFound.length !== 1) return null
             return accountsFound[0]
+        },
+        isVendorUsernameUsed: async (_, args, {dataSources: {vendors}}) => {
+            const accountsFound = await vendors.findVendorByUsername(args.username)
+            return accountsFound.length !== 0
+        },
+        isVendorEmailUsed: async (_, args, {dataSources: {vendors}}) => {
+            const accountsFound = await vendors.findVendorByEmail(args.username)
+            return accountsFound.length !== 0
         },
     },
     VendorAccount: {

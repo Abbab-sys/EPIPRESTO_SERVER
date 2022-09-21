@@ -14,4 +14,10 @@ export default class VendorsSource extends MongoDataSource {
         })).insertedId
         return await this.findOneById(newVendorId)
     }
+    async findVendorByEmail(email){
+        return await this.findByFields({email:email})
+    }
+    async findVendorByUsername(username){
+        return await this.findByFields({username:username})
+    }
 }

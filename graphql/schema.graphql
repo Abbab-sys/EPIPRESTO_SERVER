@@ -67,6 +67,8 @@ enum Day{
 
 type Query{
     loginVendor(email:String!,password:String!):VendorAccount
+    isVendorUsernameUsed(username:String!):Boolean!
+    isVendorEmailUsed(email:String!):Boolean!
 }
 type Mutation{
     vendorSignUp(accountInput:VendorAccountInput):VendorAccount
