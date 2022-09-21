@@ -39,10 +39,6 @@ export default class StoresSource extends MongoDataSource {
         return {code: 406, message: "MongoDB update failed"};
     }
 
-    async getStoreById(id) {
-        return await this.findOneById(id)
-    }
-
     async findStoresToSynchronize() {
         return await this.collection.find({
             apiType: {"$in": ["SHOPIFY","WOOCOMMERCE"]} // TODO add this to a global const

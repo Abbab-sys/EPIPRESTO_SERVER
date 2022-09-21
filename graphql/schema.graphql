@@ -6,12 +6,10 @@ input VendorAccountInput{
     username:String!
     password:String!
 }
-
 type HttpResponse{
     code:Int!
     message:String!
 }
-
 type VendorAccount{
     _id:ID!
     email:String!
@@ -20,28 +18,7 @@ type VendorAccount{
     username:String!
     store:Store!
 }
-type Product{
-    _id:ID!
-    title:String!
-    brand:String
-    vendorId:ID!
-    published:Boolean!
-    price:Float!
-    sku:String
-    taxable:Boolean!
-    imageSrc:String
-    format:String
-    byWeight:Boolean!
-    stock:Int!
-    tags:[String!]!
-}
-type Store{
-    _id:ID!
-    name:String!
-    address:String!
-    products:[Product!]!
-    disponibilities:[Disponibility!]!
-}
+
 type Disponibility{
     day:Day!
     activesHours:[ActivesHours!]!
@@ -50,7 +27,6 @@ type ActivesHours{
     openingHour:String!
     endingHour:String!
 }
-
 enum ApiType{
     SHOPIFY,
     WOOCOMMERCE
@@ -64,17 +40,6 @@ enum Day{
     SATURDAY,
     SUNDAY
 }
-
-type Query{
-    loginVendor(email:String!,password:String!):VendorAccount
-    isVendorUsernameUsed(username:String!):Boolean!
-    isVendorEmailUsed(email:String!):Boolean!
-}
-type Mutation{
-    vendorSignUp(accountInput:VendorAccountInput):VendorAccount
-    synchronizeWoocommerceStore(woocommerceCreds:WoocommerceCredentials!):HttpResponse!
-    synchronizeShopifyStore(shopifyCreds:ShopifyCredentials!):HttpResponse!
-}
 input ShopifyCredentials{
     apiToken:String!
     shopDomain:String!
@@ -82,4 +47,49 @@ input ShopifyCredentials{
 input WoocommerceCredentials{
     apiToken:String!
     shopDomain:String!
+}
+
+type Store{
+    _id:ID!
+    name:String!
+    address:String!
+    products:[Product!]!
+    disponibilities:[Disponibility!]!
+}
+type Product{
+    _id:ID!
+    relatedStore:Store!
+    title:String!
+    brand:String
+    published:Boolean!
+    tags:[String!]!
+    imgSrc:String!
+    variants:[ProductVariant!]!
+}
+type ProductVariant{
+    _id:ID!
+    relatedProduct:Product!
+    displayName:String!
+    availableForSale:Boolean!
+    price:Float!
+    sku:String
+    taxable:Boolean!
+    imgSrc:String!
+    byWeight:Boolean!
+    stock:Int!
+}
+
+
+type Query{
+    loginVendor(email:String!,password:String!):VendorAccount
+    isVendorUsernameUsed(username:String!):Boolean!
+    isVendorEmailUsed(email:String!):Boolean!
+    getStoreById(idStore:ID!):Store
+    getProductById(idProduct:ID!):Product
+    getProductVariantById(idVariant:ID!):ProductVariant
+}
+type Mutation{
+    vendorSignUp(accountInput:VendorAccountInput):VendorAccount
+    synchronizeWoocommerceStore(woocommerceCreds:WoocommerceCredentials!):HttpResponse!
+    synchronizeShopifyStore(shopifyCreds:ShopifyCredentials!):HttpResponse!
 }

@@ -6,6 +6,8 @@ import VendorsSource from "./mongodb/vendors/VendorsSource.js";
 import StoresSource from "./mongodb/stores/StoresSource.js";
 import {ApolloServerPluginLandingPageLocalDefault} from "apollo-server-core";
 import {syncShopifyProducts} from "./sync/SyncInventory.js";
+import ProductsSource from "./mongodb/products/ProductsSource.js";
+import ProductsVariantsSource from "./mongodb/products-variants/ProductsVariantsSource.js";
 
 
 const typeDefs = importSchema('./graphql/schema.graphql')
@@ -25,7 +27,10 @@ const server = new ApolloServer({
     }),
     dataSources: () => ({
         vendors: new VendorsSource(client.db("Epipresto-dev").collection('Vendors')),
-        stores: new StoresSource(client.db("Epipresto-dev").collection('Stores'))
+        stores: new StoresSource(client.db("Epipresto-dev").collection('Stores')),
+        products: new ProductsSource(client.db("Epipresto-dev").collection('Products')),
+        productsVariants:new ProductsVariantsSource(client.db("Epipresto-dev").collection('ProductsVariants'))
+
     }),
     plugins: [
         ApolloServerPluginLandingPageLocalDefault({embed: true}),

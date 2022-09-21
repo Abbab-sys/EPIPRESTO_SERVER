@@ -30,6 +30,12 @@ const resolvers = {
 
     },
     Query: {
+        getStoreById: async (_, args, {dataSources: {stores}}) => {
+            return await stores.findOneById(args.idStore)
+        },
+        getProductVariantById: async (_, args, {dataSources: {productsVariants}}) => {
+            return await productsVariants.findOneById(args.idVariant)
+        },
         loginVendor: async (_, args, {dataSources: {vendors}}) => {
             const accountsFound = await vendors.loginByEmail(args.email, args.password)
             if (accountsFound.length !== 1) return null
@@ -48,6 +54,28 @@ const resolvers = {
         store: async (parent, _, {dataSources: {stores}}) => {
             return await stores.getStoreById(parent.storeId)
         }
+    },
+    Store: {
+        products: async (mongoStoreObject, _, {dataSources: {products}}) => {
+            const productsIds = mongoStoreObject.productsIds
+            return await products.getProductsByIds(productsIds)
+        },
+    },
+    Product: {
+        relatedStore: async (mongoProductObject, _, {dataSources: {stores}}) => {
+            const relatedStoreId = mongoProductObject.relatedStoreId
+            return await stores.findOneById(relatedStoreId)
+        },
+        variants: async (mongoProductObject, _, {dataSources: {productsVariants}}) => {
+            const productsVariantsIds = mongoProductObject.variantsIds
+            return await productsVariants.getProductsVariantsByIds(productsVariantsIds)
+        },
+    },
+    ProductVariant: {
+        relatedProduct: async (mongoProductVariantObject, _, {dataSources: {products}}) => {
+            const relatedProductId = mongoProductVariantObject.relatedProductId
+            return await products.findOneById(relatedProductId)
+        },
     },
 };
 export {resolvers}
