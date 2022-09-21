@@ -40,7 +40,7 @@ const resolvers = {
             return accountsFound.length !== 0
         },
         isVendorEmailUsed: async (_, args, {dataSources: {vendors}}) => {
-            const accountsFound = await vendors.findVendorByEmail(args.username)
+            const accountsFound = await vendors.findVendorByEmail(args.email)
             return accountsFound.length !== 0
         },
     },
