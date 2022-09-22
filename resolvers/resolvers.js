@@ -55,7 +55,7 @@ const resolvers = {
     },
     VendorAccount: {
         store: async (parent, _, {dataSources: {stores}}) => {
-            return await stores.getStoreById(parent.storeId)
+            return await stores.findOneById(parent.storeId)
         }
     },
     Store: {
