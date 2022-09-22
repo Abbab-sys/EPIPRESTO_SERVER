@@ -3,6 +3,7 @@ import {ObjectId} from "mongodb";
 
 export default class ProductsSource extends MongoDataSource {
     async getProductsByIds(productsIds) {
+        if (!productsIds || productsIds.length === 0) return []
         return await this.collection.find({
             _id: {"$in": productsIds}
         }).toArray();
