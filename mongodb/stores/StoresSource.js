@@ -44,5 +44,9 @@ export default class StoresSource extends MongoDataSource {
             apiType: {"$in": ["SHOPIFY","WOOCOMMERCE"]} // TODO add this to a global const
         }).toArray();
     }
-
+    async updateStoreById(storeId, fieldsToUpdate) {
+        const query = {_id: new ObjectId(storeId)};
+        const updateValues = {$set: fieldsToUpdate};
+        return await this.collection.updateOne(query, updateValues);
+    }
 }

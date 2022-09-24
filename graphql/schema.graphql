@@ -1,11 +1,4 @@
-input VendorAccountInput{
-    shopName:String!
-    address:String!
-    email:String!
-    phone:String!
-    username:String!
-    password:String!
-}
+###############OBJECTS#####################
 type HttpResponse{
     code:Int!
     message:String!
@@ -40,14 +33,7 @@ enum Day{
     SATURDAY,
     SUNDAY
 }
-input ShopifyCredentials{
-    apiToken:String!
-    shopDomain:String!
-}
-input WoocommerceCredentials{
-    apiToken:String!
-    shopDomain:String!
-}
+
 
 type Store{
     _id:ID!
@@ -78,7 +64,51 @@ type ProductVariant{
     byWeight:Boolean!
     stock:Int!
 }
+##########################INPUTS#################
+input ShopifyCredentials{
+    apiToken:String!
+    shopDomain:String!
+}
+input WoocommerceCredentials{
+    apiToken:String!
+    shopDomain:String!
+}
+input VendorAccountInput{
+    shopName:String!
+    address:String!
+    email:String!
+    phone:String!
+    username:String!
+    password:String!
+}
 
+###############UPDATES#####################
+input UpdateProductVariant{
+    displayName:String
+    availableForSale:Boolean
+    price:Float
+    sku:String
+    taxable:Boolean
+    imgSrc:String
+    byWeight:Boolean
+    stock:Int
+}
+input UpdateProduct{
+    title:String
+    brand:String
+    published:Boolean
+    imgSrc:String
+}
+input UpdateStore{
+    name:String
+    address:String
+}
+input UpdateVendorAccount{
+    email:String
+    password:String
+    phone:String
+    username:String
+}
 
 type Query{
     loginVendor(email:String!,password:String!):VendorAccount
@@ -92,4 +122,8 @@ type Mutation{
     vendorSignUp(accountInput:VendorAccountInput):VendorAccount
     synchronizeWoocommerceStore(woocommerceCreds:WoocommerceCredentials!):HttpResponse!
     synchronizeShopifyStore(shopifyCreds:ShopifyCredentials!):HttpResponse!
+    updateProductVariant(variantId:ID!,fieldsToUpdate:UpdateProductVariant!):ProductVariant
+    updateProduct(productId:ID!,fieldsToUpdate:UpdateProduct!):Product
+    updateStore(storeId:ID!,fieldsToUpdate:UpdateStore!):Store
+    updateVendorAccount(vendorId:ID!,fieldsToUpdate:UpdateVendorAccount!):VendorAccount
 }

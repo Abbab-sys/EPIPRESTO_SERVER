@@ -19,6 +19,9 @@
   },
   "homepage": "https://gitlab.com/polytechnique-montr-al/log89xx/22-3/equipe-9/serveur#readme",
   "dependencies": {
+    "@graphql-tools/graphql-file-loader": "^7.5.5",
+    "@graphql-tools/load": "^7.7.7",
+    "@graphql-tools/load-files": "^6.6.1",
     "apollo-datasource-mongodb": "^0.5.4",
     "apollo-server": "^3.10.2",
     "apollo-server-core": "^3.10.2",

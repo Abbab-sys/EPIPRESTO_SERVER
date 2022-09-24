@@ -1,5 +1,15 @@
 const resolvers = {
     Mutation: {
+        updateStore: async (parent, args, {dataSources:{stores}}) => {
+            const storeToUpdateId = args.storeId;
+            const fieldsToUpdate = args.fieldsToUpdate;
+            const cleanedFieldsToUpdate = {};
+            for (const [key, value] of Object.entries(fieldsToUpdate)) {
+                if (value) cleanedFieldsToUpdate[key] = value;
+            }
+            const updateResult = await stores.updateStoreById(storeToUpdateId, cleanedFieldsToUpdate);
+            return await stores.findOneById(storeToUpdateId);
+        },
         vendorSignUp: async (parent, args, {dataSources: {vendors, stores}}) => {
             const vendorAccountInput = args.accountInput // temp storeid
             const newStoreId = await stores.createNewStore(vendorAccountInput.shopName, vendorAccountInput.address)
