@@ -1,22 +1,19 @@
-import {syncProducts} from "./SyncInventory.js";
 import {GraphQLClient, gql} from 'graphql-request'
 import StoresSource from "../mongodb/stores/StoresSource.js";
 import ProductsVariantsSource from "../mongodb/products-variants/ProductsVariantsSource.js";
 import ProductsSource from "../mongodb/products/ProductsSource.js";
 
-async function syncShopifyProducts(mongoClient, store) {
-    const shopifyShopDomain = store.shopifyShopDomain
+async function getShopifyProductsWithCredentials(shopifyShopDomain,shopifyToken){
     const shopifyEndpoint = shopifyShopDomain + "/admin/api/2022-07/graphql.json"
-    const shopifyToken = store.shopifyApiToken
-
     const graphQLClient = new GraphQLClient(shopifyEndpoint, {
         headers: {
             "X-Shopify-Access-Token": shopifyToken
         },
     })
+    //TODO: CHANGER FIRST A 100
     const query = gql`
         query getProducts{
-            products(first: 10, reverse: true) {
+            products(first: 1, reverse: true) {
                 edges {
                     node {
                         id
@@ -50,7 +47,11 @@ async function syncShopifyProducts(mongoClient, store) {
             }
         }
     `
-    const data = await graphQLClient.request(query)
+    return await graphQLClient.request(query)
+}
+
+async function syncShopifyProducts(mongoClient, store) {
+    const data = await getShopifyProductsWithCredentials(store.shopifyShopDomain,store.shopifyApiToken)
     // console.log(JSON.stringify(data, undefined, 2))
 
     const storesSource = new StoresSource(mongoClient.db("Epipresto-dev").collection('Stores'))
@@ -173,4 +174,4 @@ async function processProductVariant(productVariant, product, {dataSources: {pro
 }
 
 
-export {syncShopifyProducts}
+export {syncShopifyProducts,getShopifyProductsWithCredentials}

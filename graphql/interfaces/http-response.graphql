@@ -1,0 +1,29 @@
+interface HttpResponseInterface {
+    code:Int!
+    message:String!
+}
+
+type HttpResponse implements HttpResponseInterface{
+    code:Int!
+    message:String!
+}
+type ProductResponse implements HttpResponseInterface{
+    code:Int!
+    message:String!
+    product:Product
+}
+type StoreResponse implements HttpResponseInterface{
+    code:Int!
+    message:String!
+    store:Store
+}
+type VendorAccountResponse implements HttpResponseInterface{
+    code:Int!
+    message:String!
+    vendorAccount:VendorAccount
+}
+type ProductVariantResponse implements HttpResponseInterface{
+    code:Int!
+    message:String!
+    productVariant:ProductVariant
+}

@@ -1,0 +1,60 @@
+type VendorAccount{
+    _id:ID!
+    email:String!
+    password:String!
+    phone:String!
+    username:String!
+    store:Store!
+}
+type Store{
+    _id:ID!
+    name:String!
+    address:String!
+    products:[Product!]!
+    disponibilities:[Disponibility!]!
+}
+
+type Disponibility{
+    day:Day!
+    activesHours:[ActivesHours!]!
+}
+type ActivesHours{
+    openingHour:String!
+    endingHour:String!
+}
+enum ApiType{
+    SHOPIFY,
+    WOOCOMMERCE
+}
+enum Day{
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY
+}
+
+type Product{
+    _id:ID!
+    relatedStore:Store!
+    title:String!
+    brand:String
+    published:Boolean!
+    tags:[String!]!
+    imgSrc:String!
+    variants:[ProductVariant!]!
+}
+type ProductVariant{
+    _id:ID!
+    relatedProduct:Product!
+    displayName:String!
+    availableForSale:Boolean!
+    price:Float!
+    sku:String
+    taxable:Boolean!
+    imgSrc:String!
+    byWeight:Boolean!
+    stock:Int!
+}

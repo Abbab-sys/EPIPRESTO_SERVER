@@ -15,4 +15,23 @@ export default class ProductsSource extends MongoDataSource {
         return insertedId;
     }
 
+    async updateProductById(idProduct, fieldsToUpdate) {
+        const query = {_id: new ObjectId(idProduct)};
+        const updateValues = {$set: fieldsToUpdate};
+        return await this.collection.updateOne(query, updateValues);
+    }
+    async addNewVariantToProduct(productId, newVariantId) {
+        const query = {_id: new ObjectId(productId)};
+        const updateVariants = {$push: {variantsIds: newVariantId}};
+        return await this.collection.updateOne(query, updateVariants);
+    }
+    async removeVariantFromProduct(productId, variantId) {
+        const query = {_id: new ObjectId(productId)};
+        const updateVariants = {$pull: {variantsIds: variantId}};
+        return await this.collection.updateOne(query, updateVariants);
+    }
+    async deleteProductById(idProduct) {
+        const query = {_id: new ObjectId(idProduct)};
+        return await this.collection.deleteOne(query);
+    }
 }
