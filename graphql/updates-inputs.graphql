@@ -1,0 +1,27 @@
+input UpdateProductVariant{
+    displayName:String
+    availableForSale:Boolean
+    price:Float
+    sku:String
+    taxable:Boolean
+    imgSrc:String
+    byWeight:Boolean
+    stock:Int
+}
+input UpdateProduct{
+    title:String
+    brand:String
+    published:Boolean
+    tags:[String!]
+    imgSrc:String
+}
+input UpdateStore{
+    name:String
+    address:String
+}
+input UpdateVendorAccount{
+    email:String
+    password:String
+    phone:String
+    username:String
+}

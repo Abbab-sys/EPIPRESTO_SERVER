@@ -25,13 +25,14 @@ export default class StoresSource extends MongoDataSource {
         return {code: 406, message: "MongoDB update failed"};
     }
 
-    async addWoocommerceSyncToStore(storeId, apiToken, shopDomain) {
+    async addWoocommerceSyncToStore(storeId, consumerKey,consumerSecretKey, shopDomain) {
         const query = {_id: new ObjectId(storeId)};
         const synchronizationValues = {
             $set: {
                 apiType: "WOOCOMMERCE",
                 woocommerceShopDomain: shopDomain,
-                woocommerceApiToken: apiToken
+                woocommerceConsumerKey: consumerKey,
+                woocommerceConsumerSecretKey: consumerSecretKey
             }
         };
         const mongoResponse = await (this.collection.updateOne(query, synchronizationValues))
@@ -48,5 +49,15 @@ export default class StoresSource extends MongoDataSource {
         const query = {_id: new ObjectId(storeId)};
         const updateValues = {$set: fieldsToUpdate};
         return await this.collection.updateOne(query, updateValues);
+    }
+    async addNewProductToStore(storeId, newProductId) {
+        const query = {_id: new ObjectId(storeId)};
+        const updateProducts = {$push: {productsIds: newProductId}};
+        return await this.collection.updateOne(query, updateProducts);
+    }
+    async removeProductFromStore(storeId, productId) {
+        const query = {_id: new ObjectId(storeId)};
+        const updateProducts = {$pull: {productsIds: productId}};
+        return await this.collection.updateOne(query, updateProducts);
     }
 }

@@ -1,0 +1,35 @@
+input ShopifyCredentials{
+    apiToken:String!
+    shopDomain:String!
+}
+input WoocommerceCredentials{
+    apiToken:String!
+    shopDomain:String!
+}
+input VendorAccountInput{
+    shopName:String!
+    address:String!
+    email:String!
+    phone:String!
+    username:String!
+    password:String!
+}
+input ProductInput{
+    title:String!
+    description:String
+    brand:String
+    published:Boolean!
+    tags:[String!]!
+    imgSrc:String!
+    variants:[ProductVariantInput!]!
+}
+input ProductVariantInput{
+    variantTitle:String!
+    price:Float!
+    sku:String
+    taxable:Boolean!
+    imgSrc:String!
+    byWeight:Boolean!
+    availableForSale:Boolean!
+    stock:Int!
+}

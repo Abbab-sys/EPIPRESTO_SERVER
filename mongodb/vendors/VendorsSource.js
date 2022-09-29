@@ -1,4 +1,5 @@
 import {MongoDataSource} from "apollo-datasource-mongodb";
+import {ObjectId} from "mongodb";
 
 export default class VendorsSource extends MongoDataSource {
     async loginByEmail(vendorEmail, vendorPassword) {
@@ -7,10 +8,17 @@ export default class VendorsSource extends MongoDataSource {
             password: vendorPassword
         })
     }
+    async loginByUsername(vendorUsername, vendorPassword) {
+        return await this.findByFields({
+            username: vendorUsername,
+            password: vendorPassword
+        })
+    }
 
     async signUp(accountInput) {
+        const {shopName,adress,...accountInputWithoutShopNameAndAdress} = accountInput;
         let newVendorId = (await this.collection.insertOne({
-            ...accountInput,
+            ...accountInputWithoutShopNameAndAdress,
         })).insertedId
         return await this.findOneById(newVendorId)
     }
@@ -19,5 +27,10 @@ export default class VendorsSource extends MongoDataSource {
     }
     async findVendorByUsername(username){
         return await this.findByFields({username:username})
+    }
+    async updateVendorById(vendorId, fieldsToUpdate) {
+        const query = {_id: new ObjectId(vendorId)};
+        const updateValues = {$set: fieldsToUpdate};
+        return await this.collection.updateOne(query, updateValues);
     }
 }
