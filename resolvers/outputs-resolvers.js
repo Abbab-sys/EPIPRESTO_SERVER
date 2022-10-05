@@ -5,9 +5,10 @@ const outputsResolvers = {
         }
     },
     Store: {
-        products: async (mongoStoreObject, _, {dataSources: {products}}) => {
+        products: async (mongoStoreObject, {first,offset}, {dataSources: {products}}) => {
             const productsIds = mongoStoreObject.productsIds
-            return await products.getProductsByIds(productsIds)
+            const productsIdsSliced = productsIds.slice(offset, offset + first)
+            return await products.getProductsByIds(productsIdsSliced)
         },
     },
     Product: {

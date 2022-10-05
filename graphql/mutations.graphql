@@ -1,5 +1,7 @@
 type Mutation{
-    vendorSignUp(accountInput:VendorAccountInput):VendorAccountResponse!
+    vendorSignUp(accountInput:VendorAccountInput):HttpResponse!
+    verifyVendorAccount(token:String!):VendorAccountResponse!
+#    verifyClientAccount(token:String!):ClientAccountResponse!
     synchronizeWoocommerceStore(woocommerceCreds:WoocommerceCredentials!):HttpResponse!
     synchronizeShopifyStore(shopifyCreds:ShopifyCredentials!):HttpResponse!
     updateProductVariant(variantId:ID!,fieldsToUpdate:UpdateProductVariant!): ProductVariantResponse!
