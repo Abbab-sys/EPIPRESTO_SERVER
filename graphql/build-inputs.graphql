@@ -3,7 +3,8 @@ input ShopifyCredentials{
     shopDomain:String!
 }
 input WoocommerceCredentials{
-    apiToken:String!
+    consumerKey:String!,
+    consumerSecretKey:String!,
     shopDomain:String!
 }
 input VendorAccountInput{

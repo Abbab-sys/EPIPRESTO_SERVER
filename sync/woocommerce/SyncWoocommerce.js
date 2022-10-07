@@ -1,9 +1,9 @@
 import pkg from "@woocommerce/woocommerce-rest-api";
 const WooCommerceRestApi = pkg.default; //https://stackoverflow.com/questions/62250120/typeerror-woocommercerestapi-is-not-a-constructor
 
-import StoresSource from "../mongodb/stores/StoresSource.js";
-import ProductsVariantsSource from "../mongodb/products-variants/ProductsVariantsSource.js";
-import ProductsSource from "../mongodb/products/ProductsSource.js";
+import StoresSource from "../../mongodb/stores/StoresSource.js";
+import ProductsVariantsSource from "../../mongodb/products-variants/ProductsVariantsSource.js";
+import ProductsSource from "../../mongodb/products/ProductsSource.js";
 
 async function getWooCommerceProductsWithCredentials(
   woocommerceShopDomain,
@@ -44,8 +44,8 @@ async function syncWooCommerceProducts(mongoClient, store) {
 
   const api = new WooCommerceRestApi({
     url: store.woocommerceShopDomain,
-    consumerKey: store.woocommerceShopConsumerKey,
-    consumerSecret: store.woocommerceShopConsumerSecret,
+    consumerKey: store.woocommerceConsumerKey,
+    consumerSecret: store.woocommerceConsumerSecretKey,
     version: "wc/v3",
     queryStringAuth: true,
   });
@@ -255,8 +255,6 @@ async function processProductVariant(
   }
 }
 
-//get product variants
-//TODO: ITERER SUR TOUTE LES PAGES DES VARIANTS
 async function getProductVariants(productId, api) {
   const data = await api.get(`products/${productId}/variations`, {
     per_page: 100,

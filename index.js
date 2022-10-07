@@ -40,7 +40,8 @@ const server = new ApolloServer({
     cache: 'bounded',
     context: ({req}) => ({
         // get the user token from the headers
-        user: req.headers.authorization || ''
+        user: req.headers.authorization || '',
+        client: client,
     }),
     dataSources: () => ({
         vendors: vendorsSource,
@@ -57,14 +58,14 @@ const server = new ApolloServer({
 server.listen().then(({url}) => {
     console.log(`🚀  Server ready at ${url}`);
 
-    syncProducts(client).then(() => {
-        console.log("Products synchronized for first time\nWaiting for next sync in 1 hour ...")
-    })
-    nodeCron.schedule('0 */1 * * *', () => {
-        syncProducts(client).then(() => {
-            console.log("Products synchronized\nWaiting for next sync in 1 hour ...")
-        })
-    })
+    // syncProducts(client).then(() => {
+    //     console.log("Products synchronized for first time\nWaiting for next sync in 1 hour ...")
+    // })
+    // nodeCron.schedule('0 */1 * * *', () => {
+    //     syncProducts(client).then(() => {
+    //         console.log("Products synchronized\nWaiting for next sync in 1 hour ...")
+    //     })
+    // })
 
 
 });
