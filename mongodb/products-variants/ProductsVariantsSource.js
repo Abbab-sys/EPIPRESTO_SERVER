@@ -14,8 +14,9 @@ export default class ProductsVariantsSource extends MongoDataSource {
         }).toArray();
     }
     async createProductVariant(productVariant) {
-        const {insertedId} = await this.collection.insertOne(productVariant);
-        return insertedId;
+        // const {insertedId} = await this.collection.insertOne(productVariant);
+        // return insertedId;
+        return await this.collection.insertOne(productVariant);
     }
     async updateProductVariantById(idProductVariant, fieldsToUpdate) {
         const query = {_id: new ObjectId(idProductVariant)};
@@ -30,5 +31,14 @@ export default class ProductsVariantsSource extends MongoDataSource {
         const query = {relatedProductId: productId};
         return await this.collection.deleteMany(query);
     }
+
+    //getProductVariantByShopifyProductVariantId
+
+    async getProductVariantByShopifyId(shopifyProductVariantId) {
+        return await this.collection.findOne({
+            shopifyVariantId: shopifyProductVariantId
+        });
+    }
+    
 
 }

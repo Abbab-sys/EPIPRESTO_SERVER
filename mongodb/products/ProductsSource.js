@@ -34,4 +34,10 @@ export default class ProductsSource extends MongoDataSource {
         const query = {_id: new ObjectId(idProduct)};
         return await this.collection.deleteOne(query);
     }
+
+    //GET single product by id
+    async getProductByShopifyId(idProduct) {
+        return await this.collection.findOne({shopifyProductId: idProduct});
+    }
+    
 }

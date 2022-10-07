@@ -6,7 +6,6 @@ export default class StoresSource extends MongoDataSource {
         return (await this.collection.insertOne({
             name: shopName,
             address: shopAddress,
-            products: [],
             disponibilities: []
         })).insertedId
     }
@@ -60,4 +59,12 @@ export default class StoresSource extends MongoDataSource {
         const updateProducts = {$pull: {productsIds: productId}};
         return await this.collection.updateOne(query, updateProducts);
     }
+
+    //get store by id
+    async getStoreById(storeId) {
+        return await this.collection.findOne({_id: new ObjectId(storeId)})
+    }
+
+
+    
 }
