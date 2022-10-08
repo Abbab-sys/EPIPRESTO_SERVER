@@ -1,28 +1,41 @@
-import nodemailer from "nodemailer";
+import * as nodemailer from 'nodemailer';
+import * as fs from 'fs';
+import * as path from 'path';
 
-async function sendConfirmationEmail(email, token) {
+async function sendEmail(email, htmlPath, htmlReplacements) {
+    const __dirname = path.dirname(new URL(import.meta.url).pathname)
+    const filePath = path.join(__dirname, htmlPath);
+    let source = fs.readFileSync(filePath, 'utf-8').toString();
+    source=source.replace("<LINK_TO_CLICK>",htmlReplacements.linkToClick)
+    // const template = Handlebars.compile(source);
+    //
+    // const htmlToSend = template(htmlReplacements);
     const transporter = nodemailer.createTransport({
-        service: "hotmail",
+        service: "Outlook365",
         auth: {
-            user: "adam.naoui@outlook.fr",
-            pass: "Jirensama11!"
+            user: process.env.EPIPRESTO_MAIL,
+            pass: process.env.EPIPRESTO_MAIL_PASSWORD
         }
     });
-    const linkToClick = process.env.WEB_APP_URL + `/verify?token=${token}`;
     const mailOptions = {
-        from: "adam.naoui@outlook.fr",
-        to: process.env.EPIPRESTO_MAIL,
-        subject: 'Confirmation de votre mail/E-mail validation',
-        text: 'Click this link to confirm your email: ' + linkToClick
+        from: process.env.EPIPRESTO_MAIL,
+        to: email,
+        subject: 'Confirmation de votre é-mail/ E-mail validation',
+        html: source,
     };
     await transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log(error);
-            } else {
-                console.log('Email sent: ' + info.response);
-            }
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
         }
-    );
+    })
+}
+
+async function sendConfirmationEmail(email, token) {
+
+    const linkToClick = process.env.WEB_APP_URL + `/verify/${token}`;
+    await sendEmail(email, './htmls/AccountVerified.html', {linkToClick});
 }
 
 export {sendConfirmationEmail}

@@ -10,6 +10,7 @@ import {mutationsSyncResolvers} from "./mutations-resolvers/mutations-sync-resol
 import {mutationsProductsManagementResolvers} from "./mutations-resolvers/mutations-products-management-resolvers.js";
 import * as nodemailer from 'nodemailer';
 import {sendConfirmationEmail} from "../email/SendConfirmationEmail.js";
+import {ObjectId} from "mongodb";
 
 const mutationsResolvers = {
     Mutation: {
@@ -37,8 +38,10 @@ const mutationsResolvers = {
             if (relatedVendorId) {
                 const vendorAccount = await vendors.findOneById(relatedVendorId)
                 if (vendorAccount) {
-                    await vendors.updateOneById(relatedVendorId, {verified: true})
-                    await verificationTokens.deleteOneById(token)
+                    const query = {_id: new ObjectId(relatedVendorId)};
+                    const updateValues = {$set: {verified: true}};
+                    await vendors.collection.updateOne(query, updateValues)
+                    await verificationTokens.collection.deleteOne({_id: new ObjectId(token)})
                     return {
                         code: 200,
                         message: "Vendor account verified",

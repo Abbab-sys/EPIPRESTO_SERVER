@@ -6,7 +6,7 @@ const queriesVendorsLoginResolvers = {
             message: "Invalids credentials"
         }
         if(!accountsFound[0].verified) return {
-            code: 406,
+            code: 401,
             message: "Account not verified"
         }
         return {
@@ -22,7 +22,7 @@ const queriesVendorsLoginResolvers = {
             message: "Invalids credentials"
         }
         if(!accountsFound[0].verified) return {
-            code: 406,
+            code: 401,
             message: "Account not verified"
         }
         return {
