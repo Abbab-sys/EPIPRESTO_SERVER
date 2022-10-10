@@ -10,7 +10,7 @@ type Store{
     _id:ID!
     name:String!
     address:String!
-    products:[Product!]!
+    products(first:Int,offset:Int!):[Product!]!
     disponibilities:[Disponibility!]!
 }
 

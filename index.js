@@ -3,6 +3,7 @@ import {ApolloServer} from 'apollo-server';
 import {MongoClient} from "mongodb";
 import VendorsSource from "./mongodb/vendors/VendorsSource.js";
 import StoresSource from "./mongodb/stores/StoresSource.js";
+import VerificationTokensSource from "./mongodb/VerificationTokens/VerificationTokensSource.js";
 import {ApolloServerPluginLandingPageLocalDefault} from "apollo-server-core";
 import {syncProducts} from "./sync/SyncInventory.js";
 import ProductsSource from "./mongodb/products/ProductsSource.js";
@@ -32,7 +33,7 @@ const vendorsSource = new VendorsSource(db.collection(process.env.DATABASE_VENDO
 const storesSource = new StoresSource(db.collection(process.env.DATABASE_STORES_COLLECTION))
 const productsSource = new ProductsSource(db.collection(process.env.DATABASE_PRODUCTS_COLLECTION))
 const productsVariantsSource = new ProductsVariantsSource(db.collection(process.env.DATABASE_PRODUCTS_VARIANTS_COLLECTION))
-
+const verificationTokensSource = new VerificationTokensSource(db.collection(process.env.DATABASE_VERIFICATION_TOKENS_COLLECTION))
 const server = new ApolloServer({
     typeDefs,
     resolvers,
@@ -47,7 +48,8 @@ const server = new ApolloServer({
         vendors: vendorsSource,
         stores: storesSource,
         products: productsSource,
-        productsVariants: productsVariantsSource
+        productsVariants: productsVariantsSource,
+        verificationTokens: verificationTokensSource
 
     }),
     plugins: [

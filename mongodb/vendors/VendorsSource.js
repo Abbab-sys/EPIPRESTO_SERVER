@@ -8,6 +8,7 @@ export default class VendorsSource extends MongoDataSource {
             password: vendorPassword
         })
     }
+
     async loginByUsername(vendorUsername, vendorPassword) {
         return await this.findByFields({
             username: vendorUsername,
@@ -16,18 +17,23 @@ export default class VendorsSource extends MongoDataSource {
     }
 
     async signUp(accountInput) {
-        const {shopName,adress,...accountInputWithoutShopNameAndAdress} = accountInput;
+        const {shopName, adress, ...accountInputWithoutShopNameAndAdress} = accountInput;
         let newVendorId = (await this.collection.insertOne({
             ...accountInputWithoutShopNameAndAdress,
+            verified: false,
+
         })).insertedId
         return await this.findOneById(newVendorId)
     }
-    async findVendorByEmail(email){
-        return await this.findByFields({email:email})
+
+    async findVendorByEmail(email) {
+        return await this.findByFields({email: email})
     }
-    async findVendorByUsername(username){
-        return await this.findByFields({username:username})
+
+    async findVendorByUsername(username) {
+        return await this.findByFields({username: username})
     }
+
     async updateVendorById(vendorId, fieldsToUpdate) {
         const query = {_id: new ObjectId(vendorId)};
         const updateValues = {$set: fieldsToUpdate};
