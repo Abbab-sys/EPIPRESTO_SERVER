@@ -1,0 +1,10 @@
+type Subscription {
+    messageSent(vendorId:ID,clientId:ID): MessageReceived
+}
+type MessageReceived {
+    relatedChat:Chat!
+    message:String!
+    date:Date!
+    role:Role!
+    status:MessageStatus!
+}

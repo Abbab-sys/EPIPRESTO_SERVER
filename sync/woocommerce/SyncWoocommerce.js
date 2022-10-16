@@ -1,9 +1,9 @@
 import pkg from "@woocommerce/woocommerce-rest-api";
 const WooCommerceRestApi = pkg.default; //https://stackoverflow.com/questions/62250120/typeerror-woocommercerestapi-is-not-a-constructor
 
-import StoresSource from "../../mongodb/stores/StoresSource.js";
-import ProductsVariantsSource from "../../mongodb/products-variants/ProductsVariantsSource.js";
-import ProductsSource from "../../mongodb/products/ProductsSource.js";
+import StoresSource from "../../mongodb/StoresSource.js";
+import ProductsVariantsSource from "../../mongodb/ProductsVariantsSource.js";
+import ProductsSource from "../../mongodb/ProductsSource.js";
 
 async function getWooCommerceProductsWithCredentials(
   woocommerceShopDomain,

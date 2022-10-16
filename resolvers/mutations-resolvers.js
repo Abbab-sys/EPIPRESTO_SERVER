@@ -10,17 +10,21 @@ import {mutationsProductsManagementResolvers} from "./mutations-resolvers/mutati
 import * as nodemailer from 'nodemailer';
 import {sendConfirmationEmail} from "../email/SendConfirmationEmail.js";
 import {ObjectId} from "mongodb";
+import {mutationsOrdersResolvers} from "./mutations-resolvers/mutations-orders-resolvers.js";
+import {PUB_SUB} from "./subscriptions-resolvers.js";
 
 const mutationsResolvers = {
     Mutation: {
         ...mutationsUpdatesResolvers,
         ...mutationsSyncResolvers,
         ...mutationsProductsManagementResolvers,
-        vendorSignUp: async (parent, {accountInput}, {dataSources: {vendors, stores,verificationTokens}}) => {
+        ...mutationsOrdersResolvers,
+        vendorSignUp: async (parent, {accountInput}, {dataSources: {vendors, stores, verificationTokens}}) => {
             const {shopName, address} = accountInput
             try {
                 accountInput.storeId = await stores.createNewStore(shopName, address)
                 const newVendorAccount = await vendors.signUp(accountInput)
+                await stores.updateOne(newVendorAccount.storeId, {$set:{relatedVendorId: newVendorAccount._id}})
                 const newToken = await verificationTokens.createVendorToken(newVendorAccount._id)
                 sendConfirmationEmail(newVendorAccount.email, newToken.toString())
 
@@ -62,6 +66,27 @@ const mutationsResolvers = {
             //     }
             // }
             return {code: 406, message: "Token not found"}
+        },
+        sendMessageToChat: async (parent, {message:messageInput}, {dataSources: {messages, chats,stores,clients}}) => {
+            const {relatedChatID, content, role} = messageInput
+
+            try {
+                const newMessageId = await messages.createNewMessage(content, role, relatedChatID)
+                const {
+                    chatId,
+                    relatedVendorId,
+                    relatedClientId
+                } = await chats.addMessageToChat(relatedChatID, newMessageId)
+                const newMessage = await messages.findOneById(newMessageId)
+                newMessage.relatedVendor = await stores.findOneById(relatedVendorId)
+                newMessage.relatedChat = await chats.findOneById(chatId)
+                newMessage.relatedClient = await clients.findOneById(relatedClientId)
+                PUB_SUB.publish("MESSAGE_SENT", {messageSent:newMessage})
+                return {code: 200, message: "Message sent successfully"}
+
+            } catch (e) {
+                return {code: 406, message: e.message}
+            }
         }
     }
 };

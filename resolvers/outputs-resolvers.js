@@ -1,3 +1,4 @@
+
 const outputsResolvers = {
     VendorAccount: {
         store: async (parent, _, {dataSources: {stores}}) => {
@@ -5,11 +6,31 @@ const outputsResolvers = {
         }
     },
     Store: {
-        products: async (mongoStoreObject, {first,offset}, {dataSources: {products}}) => {
+        products: async (mongoStoreObject, {first, offset}, {dataSources: {products}}) => {
             const productsIds = mongoStoreObject.productsIds
             const productsIdsSliced = productsIds.slice(offset, offset + first)
             return await products.getProductsByIds(productsIdsSliced)
         },
+        orders: async (mongoStoreObject, _, {dataSources: {orders, productsVariants, products}}) => {
+            const ordersIds = mongoStoreObject.orders
+            const ordersObjects = await orders.getOrdersByIds(ordersIds)
+            for (const order of ordersObjects) {
+                order.productsVariantsOrdered.filter(async ({relatedProductVariantId}) => {
+                    const productVariant = await productsVariants.findOneById(relatedProductVariantId)
+                    if (!productVariant || !productVariant.relatedProductId) return false
+                    const product = await products.findOneById(productVariant.relatedProductId)
+                    return product.relatedStoreId === mongoStoreObject._id
+                })
+            }
+            return ordersObjects
+        },
+        chats: async (mongoClientObject, _, {dataSources: {chats}}) => {
+            const chatsIds = mongoClientObject.chats
+            return await chats.getChatsByIds(chatsIds)
+        },
+        relatedVendor: async (mongoStoreObject, _, {dataSources: {vendors}}) => {
+            return await vendors.findOneById(mongoStoreObject.relatedVendorId)
+        }
     },
     Product: {
         relatedStore: async (mongoProductObject, _, {dataSources: {stores}}) => {
@@ -27,5 +48,71 @@ const outputsResolvers = {
             return await products.findOneById(relatedProductId)
         },
     },
+    Order: {
+        relatedVendors: async ({relatedVendors}, _, {dataSources: {stores}}) => {
+            return await stores.getStoresByIds(relatedVendors)
+        },
+        relatedClient: async ({relatedClient}, _, {dataSources: {clients}}) => {
+            return await clients.findOneById(relatedClient)
+        },
+        relatedChats: async ({chatsIds}, _, {dataSources: {chats}}) => {
+            return await chats.getChatsByIds(chatsIds)
+        },
+        subTotal: async ({productsVariantsOrdered}, _, {dataSources: {productsVariants}}) => {
+            let subTotal = 0
+            for (const productVariantOrdered of productsVariantsOrdered) {
+                const productVariant = await productsVariants.findOneById(productVariantOrdered.relatedProductVariantId)
+                subTotal += productVariant.price * productVariantOrdered.quantity - productVariantOrdered.discount
+            }
+            return subTotal
+        },
+        deliveryFee: async ({productsVariantsOrdered}, _, {dataSources: {productsVariants}}) => {
+            return 10
+        },
+        taxs: async ({productsVariantsOrdered}, _, {dataSources: {productsVariants}}) => {
+            let taxs = 0
+            for (const productVariantOrdered of productsVariantsOrdered) {
+                const productVariant = await productsVariants.findOneById(productVariantOrdered.relatedProductVariantId)
+                if (productVariant.taxable) {
+                    taxs += productVariant.price * productVariantOrdered.quantity * 0.15
+                }
+            }
+            return taxs
+        },
+    },
+    ProductVariantOrdered: {
+        relatedProductVariant: async ({relatedProductVariantId}, _, {dataSources: {productsVariants}}) => {
+            return await productsVariants.findOneById(relatedProductVariantId)
+        }
+    },
+    ClientAccount: {
+        orders: async (mongoClientObject, {dataSources: {orders}}) => {
+            const ordersIds = mongoClientObject.orders
+            return await orders.getOrdersByIds(ordersIds)
+        },
+        chats: async (mongoClientObject, {dataSources: {chats}}) => {
+            const chatsIds = mongoClientObject.chats
+            return await chats.getChatsByIds(chatsIds)
+        }
+    },
+    Chat: {
+        relatedOrder: async ({relatedOrderId}, _, {dataSources: {orders}}) => {
+            return await orders.findOneById(relatedOrderId)
+        },
+        relatedVendor: async ({relatedVendorId}, _, {dataSources: {stores}}) => {
+            return await stores.findOneById(relatedVendorId)
+        },
+        relatedClient: async ({relatedClientId}, _, {dataSources: {clients}}) => {
+            return await clients.findOneById(relatedClientId)
+        },
+        messages: async ({messagesIds}, _, {dataSources: {messages}}) => {
+            return await messages.getMessagesByIds(messagesIds)
+        }
+    },
+    Message: {
+        relatedChat: async ({relatedChatId}, _, {dataSources: {chats}}) => {
+            return await chats.findOneById(relatedChatId)
+        }
+    }
 };
 export {outputsResolvers}
