@@ -1,0 +1,12 @@
+type ClientAccount{
+    _id:ID!
+    lastName:String!
+    firstName:String!
+    email:String!
+    password:String!
+    address:String!
+    phone:String!
+    username:String!
+    orders:[Order!]!
+    chats:[Chat!]!
+}

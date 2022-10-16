@@ -1,16 +1,31 @@
 import {MongoDataSource} from "apollo-datasource-mongodb";
 import {ObjectId} from "mongodb";
+import sanitize from 'mongo-sanitize';
 
 export default class StoresSource extends MongoDataSource {
+    async updateOne(storeId, updateValues) {
+        storeId=sanitize(storeId);
+        const query= {_id: new ObjectId(storeId)};
+        return await this.collection.updateOne(query, updateValues);
+    }
+    async findOneById(id) {
+        id=sanitize(id);
+        return await this.collection.findOne({_id: new ObjectId(id)})
+    }
     async createNewStore(shopName, shopAddress) {
         return (await this.collection.insertOne({
             name: shopName,
             address: shopAddress,
-            disponibilities: []
+            disponibilities: [],
+            isOpen: true,
+            productsIds: [],
+            orders: [],
+            chats: [],
         })).insertedId
     }
 
     async addShopifySyncToStore(storeId, apiToken, shopDomain) {
+        storeId=sanitize(storeId);
         const query = {_id: new ObjectId(storeId)};
         const synchronizationValues = {
             $set: {
@@ -59,12 +74,24 @@ export default class StoresSource extends MongoDataSource {
         const updateProducts = {$pull: {productsIds: productId}};
         return await this.collection.updateOne(query, updateProducts);
     }
+    async getStoresByIds(storesIds) {
+        if (!storesIds || storesIds.length === 0) return []
+        return await this.collection.find({
+            _id: {"$in": storesIds}
+        }).toArray();
+    }
 
     //get store by id
     async getStoreById(storeId) {
         return await this.collection.findOne({_id: new ObjectId(storeId)})
     }
+    async submitOrderToStore(storeId, orderId) {
+        const query = {_id: new ObjectId(storeId)};
+        const updateOrders = {$push: {orders: orderId}};
+        return await this.collection.updateOne(query, updateOrders);
+    }
 
 
-    
+
+
 }

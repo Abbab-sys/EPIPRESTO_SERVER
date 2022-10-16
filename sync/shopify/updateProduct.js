@@ -1,7 +1,7 @@
 import { GraphQLClient, gql } from "graphql-request";
-import StoresSource from "../../mongodb/stores/StoresSource.js";
-import ProductsVariantsSource from "../../mongodb/products-variants/ProductsVariantsSource.js";
-import ProductsSource from "../../mongodb/products/ProductsSource.js";
+import StoresSource from "../../mongodb/StoresSource.js";
+import ProductsVariantsSource from "../../mongodb/ProductsVariantsSource.js";
+import ProductsSource from "../../mongodb/ProductsSource.js";
 import {SHOPIFY_CALLBACK_URL} from "../../constants.js"
 
 /**
@@ -55,7 +55,7 @@ export async function subscribeToProductUpdateWebHook(
  * This method is called EACH TIME a product has been updated from shopify
  *  - It's only triggered by the UPDATE webhook
  *  - It maps the updated product and its variants to our database
- * 
+ *
  * @param {string} client :mongo client
  * @param {string} shopifyShopDomain
   *@param {string} shopifyToken
@@ -100,7 +100,7 @@ export async function updateProduct(
       relatedStoreId: store._id,
       variantsIds:product.variantsIds,
       brand: "",
-      published: shopifyProduct.status === "active" ? true : false,
+      published: shopifyProduct.status === "active",
     };
 
 
@@ -114,11 +114,11 @@ export async function updateProduct(
           shopifyProductVariantId: variant.id.toString(),
           relatedProductId: product._id,
           displayName: variant.title,
-          availableForSale: variant.inventory_quantity > 0 ? true : false,
+          availableForSale: variant.inventory_quantity > 0,
           price: variant.price,
           sku: variant.sku ? variant.sku : "",
           taxable: variant.taxable,
-          byWeight: variant.weight === 0 ? false : true,
+          byWeight: variant.weight !== 0,
           stock: variant.inventory_quantity,
         };
       });
@@ -137,10 +137,10 @@ export async function updateProduct(
             variant
           );
         } else {
-          console.log("productVariant not found, creating it"),variant;
+          console.log("productVariant not found, creating it ",variant);
           const newVariant = await productsVariantsSource.createProductVariant(
             variant
-          ); 
+          );
 
           //update product variantsIds
           updatedProduct.variantsIds.push(newVariant.insertedId);

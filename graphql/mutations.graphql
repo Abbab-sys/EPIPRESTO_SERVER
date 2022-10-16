@@ -1,15 +1,24 @@
 type Mutation{
     vendorSignUp(accountInput:VendorAccountInput):HttpResponse!
+
     verifyVendorAccount(token:String!):VendorAccountResponse!
-#    verifyClientAccount(token:String!):ClientAccountResponse!
+    #    verifyClientAccount(token:String!):ClientAccountResponse!
+
     synchronizeWoocommerceStore(woocommerceCreds:WoocommerceCredentials!):HttpResponse!
     synchronizeShopifyStore(shopifyCreds:ShopifyCredentials!):HttpResponse!
+
     updateProductVariant(variantId:ID!,fieldsToUpdate:UpdateProductVariant!): ProductVariantResponse!
     updateProduct(productId:ID!,fieldsToUpdate:UpdateProduct!): ProductResponse!
     updateStore(storeId:ID!,fieldsToUpdate:UpdateStore!): StoreResponse!
     updateVendorAccount(vendorId:ID!,fieldsToUpdate:UpdateVendorAccount!): VendorAccountResponse!
+
     addNewVariantToProduct(productId:ID!,newVariant:ProductVariantInput!):HttpResponse!
     removeVariantById(productVariantId:ID!):HttpResponse!
     addNewProductToStore(storeId:ID!,newProduct:ProductInput!):HttpResponse!
     removeProductById(productId:ID!):HttpResponse!
+
+    submitOrder(clientId:ID!,productsVariantsToOrder:[ProductOrderedInput!]!,paymentMethod:PaymentMethod!):HttpResponse!
+    updateOrderStatus(orderId:ID!,newStatus:OrderStatus!):HttpResponse!
+
+    sendMessageToChat(message:MessageInput!):HttpResponse!
 }

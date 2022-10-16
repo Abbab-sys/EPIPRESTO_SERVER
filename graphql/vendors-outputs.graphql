@@ -10,8 +10,12 @@ type Store{
     _id:ID!
     name:String!
     address:String!
+    relatedVendor:VendorAccount!
+    isOpen:Boolean!
     products(first:Int,offset:Int!):[Product!]!
     disponibilities:[Disponibility!]!
+    orders:[Order!]!
+    chats:[Chat!]!
 }
 
 type Disponibility{

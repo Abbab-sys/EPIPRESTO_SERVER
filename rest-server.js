@@ -1,6 +1,6 @@
 import express from "express";
 import { getAllProducts } from "./sync/shopify/SyncAllProducts.js";
-import StoresSource from "./mongodb/stores/StoresSource.js";
+import StoresSource from "./mongodb/StoresSource.js";
 import { MongoClient } from "mongodb";
 import * as dotenv from "dotenv";
 import { updateProduct } from "./sync/shopify/updateProduct.js";

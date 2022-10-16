@@ -1,0 +1,10 @@
+input ProductOrderedInput{
+    relatedProductVariantId:ID!
+    quantity:Int!
+    discount:Float
+}
+input MessageInput{
+    relatedChatID:ID!
+    content:String!
+    role:Role!
+}

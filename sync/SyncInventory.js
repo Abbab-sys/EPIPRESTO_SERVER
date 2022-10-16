@@ -1,4 +1,4 @@
-import StoresSource from "../mongodb/stores/StoresSource.js";
+import StoresSource from "../mongodb/StoresSource.js";
 import {sendBulkOperationMutation} from "./shopify/SyncAllProducts.js";
 import {subscribeToProductUpdateWebHook} from "./shopify/updateProduct.js";
 import {syncWooCommerceProducts} from "./woocommerce/SyncWoocommerce.js";
@@ -16,13 +16,13 @@ async function syncProducts(mongoClient) {
 
                 //SUBSCRIBE TO PRODUCT UPDATE WEBHOOK
                 await subscribeToProductUpdateWebHook(store.shopifyShopDomain,store.shopifyApiToken,store._id)
-                
+
                 //TODO SUBSCRIBE TO PRODUCT DELETE WEBHOOK
                 //TODO SUBSCRIBE TO PRODUCT CREATE WEBHOOK
             }
             else continue;
-        } 
-         else if (store.woocommerceShopDomain) await syncWooCommerceProducts(mongoClient,store) 
+        }
+         else if (store.woocommerceShopDomain) await syncWooCommerceProducts(mongoClient,store)
     }
 }
 
