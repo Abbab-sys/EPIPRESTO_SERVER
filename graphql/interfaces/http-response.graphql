@@ -27,3 +27,9 @@ type ProductVariantResponse implements HttpResponseInterface{
     message:String!
     productVariant:ProductVariant
 }
+
+type OrderResponse implements HttpResponseInterface{
+    code:Int!
+    message:String!
+    order:Order
+}

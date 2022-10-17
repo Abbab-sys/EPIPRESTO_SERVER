@@ -44,5 +44,20 @@ const queriesGettersByIdResolvers = {
             }
         }
     },
+    getOrderById: async (_, args, {dataSources: {orders}}) => {
+        const result = await orders.findOneById(args.idOrder)
+        if (result) {
+            return {
+                code: 200,
+                message: "Order found",
+                order: result
+            }
+        } else {
+            return {
+                code: 404,
+                message: "Order not found"
+            }
+        }
+    }
 };
 export {queriesGettersByIdResolvers}
