@@ -55,8 +55,8 @@ const mutationsOrdersResolvers = {
                     discount
                 }
             }),
-            relatedVendors: Array.from(vendorsIds),
-            relatedClient: new ObjectId(clientId),
+            relatedVendorsIds: Array.from(vendorsIds),
+            relatedClientId: new ObjectId(clientId),
             logs: [{status: "WAITING_CONFIRMATION", time: new Date().toUTCString()}],
             chatsIds:[]
         }
@@ -73,9 +73,9 @@ const mutationsOrdersResolvers = {
             await stores.collection.updateOne(queryVendor, {$push: {orders: order._id}})
             await clients.collection.updateOne(queryClient, {$push: {orders: order._id}})
             const {insertedId: chatId} = await chats.collection.insertOne({
-                relatedOrder: order._id,
-                relatedVendor: new ObjectId(vendorId),
-                relatedClient: new ObjectId(clientId),
+                relatedOrderId: order._id,
+                relatedVendorId: new ObjectId(vendorId),
+                relatedClientId: new ObjectId(clientId),
                 messages: []
             })
             await orders.collection.updateOne({_id: order._id}, {$push: {chatsIds: chatId}})

@@ -18,6 +18,24 @@ input UpdateProduct{
 input UpdateStore{
     name:String
     address:String
+    disponibilities:[DisponibilityInput!]
+}
+input DisponibilityInput{
+    day:Day!
+    activesHours:[ActivesHoursInput!]!
+}
+enum Day{
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY
+}
+input ActivesHoursInput{
+    openingHour:String!
+    endingHour:String!
 }
 input UpdateVendorAccount{
     email:String

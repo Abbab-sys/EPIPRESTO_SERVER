@@ -14,7 +14,7 @@ export const subscriptionResolvers = {
                     // the correct repository for this operation
 
                     return (
-                        (variables.vendorId &&variables.vendorId.toString()===payload.messageSent.relatedVendor._id.toString() ) ||
+                        (variables.storeId &&variables.storeId.toString()===payload.messageSent.relatedVendor._id.toString() ) ||
                         (variables.clientId &&variables.clientId.toString()===payload.messageSent.relatedClient._id.toString() )
                     );
                 },
