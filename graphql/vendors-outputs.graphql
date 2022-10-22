@@ -30,16 +30,6 @@ enum ApiType{
     SHOPIFY,
     WOOCOMMERCE
 }
-enum Day{
-    MONDAY,
-    TUESDAY,
-    WEDNESDAY,
-    THURSDAY,
-    FRIDAY,
-    SATURDAY,
-    SUNDAY
-}
-
 type Product{
     _id:ID!
     relatedStore:Store!

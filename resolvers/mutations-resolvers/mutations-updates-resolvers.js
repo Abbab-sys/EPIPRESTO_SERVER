@@ -9,7 +9,7 @@ const mutationsUpdatesResolvers = {
         const {storeId, fieldsToUpdate} = args;
         const cleanedFieldsToUpdate = {};
         for (const [key, value] of Object.entries(fieldsToUpdate)) {
-            if (graphqlUpdateStoreFields.includes(key) && value) {
+            if (key in graphqlUpdateStoreFields && value) {
                 cleanedFieldsToUpdate[key] = value
             }
         }
@@ -27,7 +27,7 @@ const mutationsUpdatesResolvers = {
         const {vendorId, fieldsToUpdate} = args;
         const cleanedFieldsToUpdate = {};
         for (const [key, value] of Object.entries(fieldsToUpdate)) {
-            if (graphqlUpdateVendorAccountFields.includes(key) && value) {
+            if (key in graphqlUpdateVendorAccountFields && value) {
                 cleanedFieldsToUpdate[key] = value
             }
         }
@@ -45,7 +45,7 @@ const mutationsUpdatesResolvers = {
         const {productId, fieldsToUpdate} = args;
         const cleanedFieldsToUpdate = {};
         for (const [key, value] of Object.entries(fieldsToUpdate)) {
-            if (graphqlUpdateProductFields.includes(key) && value) {
+            if (key in graphqlUpdateProductFields && value) {
                 cleanedFieldsToUpdate[key] = value
             }
         }
@@ -63,7 +63,7 @@ const mutationsUpdatesResolvers = {
         const {variantId, fieldsToUpdate} = args;
         const cleanedFieldsToUpdate = {};
         for (const [key, value] of Object.entries(fieldsToUpdate)) {
-            if (graphqlUpdateProductVariantFields.includes(key) && value) {
+            if (key in graphqlUpdateProductVariantFields && value) {
                 cleanedFieldsToUpdate[key] = value
             }
         }

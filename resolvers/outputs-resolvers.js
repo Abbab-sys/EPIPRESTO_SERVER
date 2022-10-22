@@ -49,11 +49,11 @@ const outputsResolvers = {
         },
     },
     Order: {
-        relatedVendors: async ({relatedVendors}, _, {dataSources: {stores}}) => {
-            return await stores.getStoresByIds(relatedVendors)
+        relatedVendors: async ({relatedVendorsIds}, _, {dataSources: {stores}}) => {
+            return await stores.getStoresByIds(relatedVendorsIds)
         },
-        relatedClient: async ({relatedClient}, _, {dataSources: {clients}}) => {
-            return await clients.findOneById(relatedClient)
+        relatedClient: async ({relatedClientId}, _, {dataSources: {clients}}) => {
+            return await clients.findOneById(relatedClientId)
         },
         relatedChats: async ({chatsIds}, _, {dataSources: {chats}}) => {
             return await chats.getChatsByIds(chatsIds)
