@@ -44,6 +44,7 @@ type ProductVariant{
     _id:ID!
     relatedProduct:Product!
     displayName:String!
+    variantTitle:String!
     availableForSale:Boolean!
     price:Float!
     sku:String

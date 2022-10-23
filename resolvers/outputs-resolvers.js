@@ -47,6 +47,11 @@ const outputsResolvers = {
             const relatedProductId = mongoProductVariantObject.relatedProductId
             return await products.findOneById(relatedProductId)
         },
+        displayName: async (mongoProductVariantObject, _, {dataSources: {products}}) => {
+            const relatedProductId = mongoProductVariantObject.relatedProductId
+            const relatedProduct = await products.findOneById(relatedProductId)
+            return relatedProduct.title+" : "+mongoProductVariantObject.title
+        }
     },
     Order: {
         relatedVendors: async ({relatedVendorsIds}, _, {dataSources: {stores}}) => {
