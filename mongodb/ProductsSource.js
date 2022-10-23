@@ -17,7 +17,9 @@ export default class ProductsSource extends MongoDataSource {
 
     //create product
     async createProduct(product) {
-        const {insertedId} = await this.collection.insertOne(product);
+        const {variants,...productWithoutVariants} = product;
+        productWithoutVariants.variantsIds = [];
+        const {insertedId} = await this.collection.insertOne(productWithoutVariants);
         return insertedId;
     }
 

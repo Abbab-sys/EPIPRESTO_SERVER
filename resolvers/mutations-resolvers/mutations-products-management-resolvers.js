@@ -30,8 +30,7 @@ const mutationsProductsManagementResolvers = {
             return {code: 500, message: e.message}
         }
     },
-    addNewProductToStore: async (parent, args, {dataSources: {productsVariants, products, stores}}) => {
-        const {storeId, newProduct} = args
+    addNewProductToStore: async (parent, {storeId, newProduct}, {dataSources: {productsVariants, products, stores}}) => {
         const {variants} = newProduct
         newProduct.relatedStoreId = storeId
         let newProductId = null

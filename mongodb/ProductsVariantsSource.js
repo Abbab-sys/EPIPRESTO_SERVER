@@ -23,7 +23,8 @@ export default class ProductsVariantsSource extends MongoDataSource {
     async createProductVariant(productVariant) {
         // const {insertedId} = await this.collection.insertOne(productVariant);
         // return insertedId;
-        return await this.collection.insertOne(productVariant);
+        const {insertedId}= await this.collection.insertOne(productVariant);
+        return insertedId;
     }
     async updateProductVariantById(idProductVariant, fieldsToUpdate) {
         idProductVariant=sanitize(idProductVariant);
