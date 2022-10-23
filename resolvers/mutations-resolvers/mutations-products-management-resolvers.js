@@ -1,7 +1,9 @@
+import {ObjectId} from "mongodb";
+
 const mutationsProductsManagementResolvers = {
     addNewVariantToProduct: async (parent, args, {dataSources: {productsVariants, products}}) => {
         const {productId, newVariant} = args
-        newVariant.relatedProductId = productId
+        newVariant.relatedProductId = new ObjectId(productId)
         try {
             const newVariantId = await productsVariants.createProductVariant(newVariant)
             await products.addNewVariantToProduct(productId, newVariantId)
@@ -30,7 +32,13 @@ const mutationsProductsManagementResolvers = {
             return {code: 500, message: e.message}
         }
     },
-    addNewProductToStore: async (parent, {storeId, newProduct}, {dataSources: {productsVariants, products, stores}}) => {
+    addNewProductToStore: async (parent, {storeId, newProduct}, {
+        dataSources: {
+            productsVariants,
+            products,
+            stores
+        }
+    }) => {
         const {variants} = newProduct
         newProduct.relatedStoreId = storeId
         let newProductId = null
@@ -38,7 +46,7 @@ const mutationsProductsManagementResolvers = {
             newProductId = await products.createProduct(newProduct)
             await stores.addNewProductToStore(storeId, newProductId)
             for (const variant of variants) {
-                variant.relatedProductId = newProductId
+                variant.relatedProductId = new ObjectId(newProductId)
                 const newVariantId = await productsVariants.createProductVariant(variant)
                 await products.addNewVariantToProduct(newProductId, newVariantId)
             }
@@ -56,7 +64,7 @@ const mutationsProductsManagementResolvers = {
         const {productId} = args
         try {
             const productToDelete = await products.findOneById(productId)
-            const relatedStoreId= productToDelete.relatedStoreId
+            const relatedStoreId = productToDelete.relatedStoreId
             const deletionResult = await products.deleteProductById(productId);
 
             if (deletionResult.deletedCount === 1) {
