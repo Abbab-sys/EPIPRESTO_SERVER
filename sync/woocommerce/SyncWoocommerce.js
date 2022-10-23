@@ -110,7 +110,7 @@ async function syncWooCommerceProducts(mongoClient, store) {
     if (product.variantsIds.length === 0) {
       product.variants.push({
         id: product.id,
-        displayName: product.title,
+        variantTitle: '',
         sku: product.sku,
         price: product.price,
         taxable: product.taxable,
@@ -124,7 +124,7 @@ async function syncWooCommerceProducts(mongoClient, store) {
       product.variants = variants.map((variant) => {
         return {
           id: variant.id,
-          displayName: variant.attributes[0].option,
+          variantTitle: variant.attributes[0].option,
           sku: variant.sku,
           price: variant.price,
           taxable: variant.tax_status === "taxable",

@@ -51,6 +51,7 @@ export async function sendBulkOperationMutation(
                 node {
                 id
                 displayName
+                title
                 sku
                 price
                 taxable
@@ -294,7 +295,7 @@ function mapVariant(variant, parentProductId) {
     const mappedVariant = {
         shopifyVariantId: variant.id.split("/").pop(), //get the last part of the id, WHICH IS THE ID
         relatedProductId: parentProductId,
-        displayName: variant.displayName,
+        variantTitle: variant.title,
         availableForSale: variant.availableForSale,
         price: variant.price,
         sku: variant.sku,
