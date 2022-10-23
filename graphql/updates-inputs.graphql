@@ -1,5 +1,5 @@
 input UpdateProductVariant{
-    displayName:String
+    variantTitle:String
     availableForSale:Boolean
     price:Float
     sku:String
