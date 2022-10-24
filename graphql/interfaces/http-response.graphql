@@ -33,3 +33,11 @@ type OrderResponse implements HttpResponseInterface{
     message:String!
     order:Order
 }
+
+type AnalyticsResponse implements HttpResponseInterface{
+    code:Int!
+    message:String!
+    topProducts:[ProductVariant!]
+    totalSales:Float
+    totalOrders:Int
+}
