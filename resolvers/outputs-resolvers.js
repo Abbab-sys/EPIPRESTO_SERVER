@@ -8,12 +8,11 @@ const outputsResolvers = {
     Store: {
         products: async (mongoStoreObject, {first, offset,searchText}, {dataSources: {products}}) => {
             const productsIds = mongoStoreObject.productsIds
-            const productsIdsSliced = productsIds.slice(offset, offset + first)
-            const mongoProductsObjects= await products.getProductsByIds(productsIdsSliced)
+            const mongoProductsObjects= await products.getProductsByIds(productsIds)
             if (searchText) {
-                return mongoProductsObjects.filter(product => product.title.toLowerCase().includes(searchText.toLowerCase()))
+               return  mongoProductsObjects.filter(product => product.title.toLowerCase().includes(searchText.toLowerCase())).slice(offset, offset + first)
             }
-            return mongoProductsObjects
+            return mongoProductsObjects.slice(offset, offset + first)
         },
         orders: async (mongoStoreObject, _, {dataSources: {orders, productsVariants, products}}) => {
             const ordersIds = mongoStoreObject.orders
@@ -124,6 +123,6 @@ const outputsResolvers = {
         }
     }
 
-   
+
 };
 export {outputsResolvers}
