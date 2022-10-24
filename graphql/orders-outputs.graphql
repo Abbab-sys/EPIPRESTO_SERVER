@@ -10,7 +10,7 @@ type Order{
     deliveryFee:Float!
     taxs:Float!
     paymentMethod:PaymentMethod!
-}
+    }
 type OrderLog{
     status:OrderStatus
     time:Date

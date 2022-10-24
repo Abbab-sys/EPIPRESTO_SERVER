@@ -54,7 +54,7 @@ const outputsResolvers = {
         displayName: async (mongoProductVariantObject, _, {dataSources: {products}}) => {
             const relatedProductId = mongoProductVariantObject.relatedProductId
             const relatedProduct = await products.findOneById(relatedProductId)
-            return relatedProduct.title+" : "+mongoProductVariantObject.title
+            return relatedProduct.title+" : "+mongoProductVariantObject.variantTitle
         }
     },
     Order: {
@@ -123,5 +123,7 @@ const outputsResolvers = {
             return await chats.findOneById(relatedChatId)
         }
     }
+
+   
 };
 export {outputsResolvers}
