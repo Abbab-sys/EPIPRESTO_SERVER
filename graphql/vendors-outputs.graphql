@@ -12,7 +12,7 @@ type Store{
     address:String!
     relatedVendor:VendorAccount!
     isOpen:Boolean!
-    products(first:Int,offset:Int!):[Product!]!
+    products(first:Int,offset:Int!,searchText:String):[Product!]!
     disponibilities:[Disponibility!]!
     orders:[Order!]!
     chats:[Chat!]!

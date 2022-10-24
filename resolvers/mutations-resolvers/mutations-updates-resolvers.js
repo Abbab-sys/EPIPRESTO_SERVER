@@ -9,7 +9,7 @@ const mutationsUpdatesResolvers = {
         const {storeId, fieldsToUpdate} = args;
         const cleanedFieldsToUpdate = {};
         for (const [key, value] of Object.entries(fieldsToUpdate)) {
-            if (key in graphqlUpdateStoreFields && value) {
+            if (key in graphqlUpdateStoreFields && value!==null) {
                 cleanedFieldsToUpdate[key] = value
             }
         }

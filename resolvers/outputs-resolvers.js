@@ -6,10 +6,14 @@ const outputsResolvers = {
         }
     },
     Store: {
-        products: async (mongoStoreObject, {first, offset}, {dataSources: {products}}) => {
+        products: async (mongoStoreObject, {first, offset,searchText}, {dataSources: {products}}) => {
             const productsIds = mongoStoreObject.productsIds
             const productsIdsSliced = productsIds.slice(offset, offset + first)
-            return await products.getProductsByIds(productsIdsSliced)
+            const mongoProductsObjects= await products.getProductsByIds(productsIdsSliced)
+            if (searchText) {
+                return mongoProductsObjects.filter(product => product.title.toLowerCase().includes(searchText.toLowerCase()))
+            }
+            return mongoProductsObjects
         },
         orders: async (mongoStoreObject, _, {dataSources: {orders, productsVariants, products}}) => {
             const ordersIds = mongoStoreObject.orders
