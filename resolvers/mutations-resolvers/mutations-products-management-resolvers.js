@@ -12,6 +12,18 @@ const mutationsProductsManagementResolvers = {
             return {code: 500, message: e.message}
         }
     },
+    addNewVariantsToProduct: async (parent, {productId, newVariants}, {dataSources: {productsVariants, products}}) => {
+        for (const newVariant of newVariants) {
+            const {code, message} = await mutationsProductsManagementResolvers.addNewVariantToProduct(parent, {
+                productId,
+                newVariant
+            }, {dataSources: {productsVariants, products}})
+            if (code !== 200) {
+                return {code, message}
+            }
+        }
+        return {code: 200, message: "Variants added successfully"}
+    },
     removeVariantById: async (parent, args, {dataSources: {productsVariants, products}}) => {
         const {productVariantId} = args
         try {
@@ -31,6 +43,17 @@ const mutationsProductsManagementResolvers = {
         } catch (e) {
             return {code: 500, message: e.message}
         }
+    },
+    removeVariantsByIds: async (parent, {productVariantsIds}, {dataSources: {productsVariants, products}}) => {
+        for (const productVariantId of productVariantsIds) {
+            const {code, message} = await mutationsProductsManagementResolvers.removeVariantById(parent, {
+                productVariantId
+            }, {dataSources: {productsVariants, products}})
+            if (code !== 200) {
+                return {code, message}
+            }
+        }
+        return {code: 200, message: "Variants removed successfully"}
     },
     addNewProductToStore: async (parent, {storeId, newProduct}, {
         dataSources: {
@@ -76,6 +99,8 @@ const mutationsProductsManagementResolvers = {
         } catch (e) {
             return {code: 500, message: e.message}
         }
-    }
+    },
+
+
 };
 export {mutationsProductsManagementResolvers}

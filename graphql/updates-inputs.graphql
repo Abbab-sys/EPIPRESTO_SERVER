@@ -1,4 +1,5 @@
 input UpdateProductVariant{
+    variantId: ID
     variantTitle:String
     availableForSale:Boolean
     price:Float

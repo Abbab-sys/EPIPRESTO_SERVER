@@ -9,7 +9,7 @@ const mutationsUpdatesResolvers = {
         const {storeId, fieldsToUpdate} = args;
         const cleanedFieldsToUpdate = {};
         for (const [key, value] of Object.entries(fieldsToUpdate)) {
-            if (key in graphqlUpdateStoreFields && value!==null) {
+            if (key in graphqlUpdateStoreFields && value !== null) {
                 cleanedFieldsToUpdate[key] = value
             }
         }
@@ -77,6 +77,22 @@ const mutationsUpdatesResolvers = {
         }
         return {code: 406, message: "Database failed to update product variant"};
     },
+    updateProductsVariants: async (parent, {variantsToUpdate}, {dataSources: {productsVariants}}) => {
+        for (const variant of variantsToUpdate) {
+            if(!variant.variantId) {
+                return {code: 406, message: "Missing variantId"};
+            }
+        }
+        for (const variant of variantsToUpdate) {
+            const cleanedFieldsToUpdate = {};
+            const {variantId, ...fieldsToUpdate} = variant;
+            const {code,message}=await mutationsUpdatesResolvers.updateProductVariant(parent, {variantId, fieldsToUpdate}, {dataSources: {productsVariants}})
+            if(code!==200){
+                return {code,message}
+            }
+        }
+        return {code: 200, message: "Product variants updated"};
+    }
 
 };
 export {mutationsUpdatesResolvers}
