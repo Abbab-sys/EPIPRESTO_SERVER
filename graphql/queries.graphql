@@ -1,8 +1,12 @@
 type Query{
     loginVendorByEmail(email:String!,password:String!):VendorAccountResponse!
     loginVendorByUsername(username:String!,password:String!):VendorAccountResponse!
+    loginClientByEmail(email:String!,password:String!):ClientAccountResponse!
+    loginClientByUsername(username:String!,password:String!):ClientAccountResponse!
     isVendorUsernameUsed(username:String!):Boolean!
     isVendorEmailUsed(email:String!):Boolean!
+    isClientUsernameUsed(username:String!):Boolean!
+    isClientEmailUsed(email:String!):Boolean!
     getStoreById(idStore:ID!):StoreResponse!
     getProductById(idProduct:ID!):ProductResponse!
     getProductVariantById(idVariant:ID!):ProductVariantResponse!

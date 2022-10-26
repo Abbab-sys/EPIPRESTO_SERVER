@@ -22,6 +22,11 @@ type VendorAccountResponse implements HttpResponseInterface{
     message:String!
     vendorAccount:VendorAccount
 }
+type ClientAccountResponse implements HttpResponseInterface{
+    code:Int!
+    message:String!
+    clientAccount:ClientAccount
+}
 type ProductVariantResponse implements HttpResponseInterface{
     code:Int!
     message:String!

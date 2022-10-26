@@ -94,11 +94,11 @@ const outputsResolvers = {
         }
     },
     ClientAccount: {
-        orders: async (mongoClientObject, {dataSources: {orders}}) => {
+        orders: async (mongoClientObject, _,{dataSources: {orders}}) => {
             const ordersIds = mongoClientObject.orders
             return await orders.getOrdersByIds(ordersIds)
         },
-        chats: async (mongoClientObject, {dataSources: {chats}}) => {
+        chats: async (mongoClientObject, _,{dataSources: {chats}}) => {
             const chatsIds = mongoClientObject.chats
             return await chats.getChatsByIds(chatsIds)
         }
