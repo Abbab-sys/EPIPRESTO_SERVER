@@ -18,7 +18,7 @@ export default class OrdersSource extends MongoDataSource {
     }
 
     async getAllOrders() {
-        return await this.collection.find().toArray();
+        return await this.collection.find({ORDERS_COUNT: {$eq: null}}).toArray();
     }
 
     async getOrdersByIds(ordersIds) {

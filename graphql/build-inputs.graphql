@@ -22,7 +22,7 @@ input ClientAccountInput{
     phone:String!
     username:String!
     password:String!
-    adress:String!
+    address:String!
 }
 input ProductInput{
     title:String!
