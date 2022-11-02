@@ -4,7 +4,7 @@ const queriesVendorsCredentialsCheckingResolvers = {
         return !!accountsFound
     },
     isVendorEmailUsed: async (_, args, {dataSources: {vendors}}) => {
-        const accountsFound = await vendors.findVendorByEmail(args.email)
+        const accountsFound = await vendors.findVendorByEmail(args.email.toLowerCase())
         return !!accountsFound
     },
 };

@@ -27,6 +27,7 @@ export default class ClientsSource extends MongoDataSource {
     async signUp(accountInput) {
         let newClientId = (await this.collection.insertOne({
             ...accountInput,
+            email: accountInput.email.toLowerCase(),
             chats: [],
             orders: [],
             verified: false,

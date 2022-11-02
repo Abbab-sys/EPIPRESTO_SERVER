@@ -4,7 +4,7 @@ const queriesClientsCredentialsCheckingResolvers = {
         return !!accountsFound
     },
     isClientEmailUsed: async (_, args, {dataSources: {clients}}) => {
-        const accountsFound = await clients.findClientByEmail(args.email)
+        const accountsFound = await clients.findClientByEmail(args.email.toLowerCase())
         return !!accountsFound
     }
 };
