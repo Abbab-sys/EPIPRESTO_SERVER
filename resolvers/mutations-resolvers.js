@@ -53,18 +53,7 @@ const mutationsResolvers = {
                 }
                 return {code: 404, message: "Inactive Token"}
             }
-            // if (relatedClientId) {
-            //     const clientAccount = await clients.findOneById(relatedClientId)
-            //     if (clientAccount) {
-            //         await clients.updateOneById(relatedClientId, {verified: true})
-            //         await verificationTokens.deleteOneById(token)
-            //         return {
-            //             code: 200,
-            //             message: "Client account verified",
-            //             clientAccount: clientAccount
-            //         }
-            //     }
-            // }
+         
             return {code: 406, message: "Token not found"}
         },
         sendMessageToChat: async (parent, {message:messageInput}, {dataSources: {messages, chats,stores,clients}}) => {

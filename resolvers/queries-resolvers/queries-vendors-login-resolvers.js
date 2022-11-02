@@ -1,6 +1,6 @@
 const queriesVendorsLoginResolvers = {
     loginVendorByEmail: async (_, args, {dataSources: {vendors}}) => {
-        const accountsFound = await vendors.loginByEmail(args.email, args.password)
+        const accountsFound = await vendors.loginByEmail(args.email.toLowerCase(), args.password)
         if (!accountsFound) return {
             code: 404,
             message: "Invalids credentials"
