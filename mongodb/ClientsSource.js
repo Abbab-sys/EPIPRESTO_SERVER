@@ -24,6 +24,16 @@ export default class ClientsSource extends MongoDataSource {
             password: password
         })
     }
+    async signUp(accountInput) {
+        let newClientId = (await this.collection.insertOne({
+            ...accountInput,
+            chats: [],
+            orders: [],
+            verified: false,
+
+        })).insertedId
+        return await this.findOneById(newClientId)
+    }
     async loginByEmail(email, password) {
         password=sanitize(password);
         return await this.findByFields({

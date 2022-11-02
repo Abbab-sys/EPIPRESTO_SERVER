@@ -4,7 +4,7 @@ type ClientAccount{
     firstName:String!
     email:String!
     password:String!
-    address:String!
+    adress:String!
     phone:String!
     username:String!
     orders:[Order!]!

@@ -1,6 +1,6 @@
 type Mutation{
     vendorSignUp(accountInput:VendorAccountInput):HttpResponse!
-
+    clientSignUp(accountInput:ClientAccountInput):HttpResponse!
     verifyVendorAccount(token:String!):VendorAccountResponse!
     #    verifyClientAccount(token:String!):ClientAccountResponse!
 

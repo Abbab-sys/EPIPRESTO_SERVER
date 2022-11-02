@@ -16,11 +16,11 @@ const mutationsSyncResolvers = {
         try {
             await getWooCommerceProductsWithCredentials(shopDomain, consumerKey, consumerSecretKey)
             await stores.addWoocommerceSyncToStore(user.storeId, consumerKey, consumerSecretKey, shopDomain)
-            
+
             const store = await stores.getStoreById(user.storeId)
 
             await syncWooCommerceProducts(client,store) //return error code if not working
-            
+
             //TODO RETURN ERRORS IF NOT WORKING FOR EACH AWAIT ABOVE
             return {
                 code: 200,
@@ -51,7 +51,7 @@ const mutationsSyncResolvers = {
             //TODO: Subscribe to product delete webhook
             //TODO: Subscribe to product create webhook
 
-            await stores.updateStoreById(user._id, {
+            await stores.updateStoreById(user.storeId, {
                 lastShopifySyncDate: new Date().toISOString().slice(0, 19),
               });
 
@@ -64,6 +64,6 @@ const mutationsSyncResolvers = {
         }
     },
 
-    
+
 };
 export {mutationsSyncResolvers}

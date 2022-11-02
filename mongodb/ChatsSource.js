@@ -14,6 +14,9 @@ export default class ChatsSource extends MongoDataSource {
             _id: {"$in": chatsIds}
         }).toArray();
     }
+    async getAllChats() {
+        return await this.collection.find().toArray();
+    }
     async addMessageToChat(chatId, newMessageId) {
         chatId=sanitize(chatId);
         newMessageId=sanitize(newMessageId);
