@@ -31,6 +31,7 @@ export default class VendorsSource extends MongoDataSource {
         let newVendorId = (await this.collection.insertOne({
             ...accountInputWithoutShopNameAndAdress,
             verified: false,
+            email: accountInput.email.toLowerCase(),
 
         })).insertedId
         return await this.findOneById(newVendorId)

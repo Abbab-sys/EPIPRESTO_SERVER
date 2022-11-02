@@ -8,6 +8,10 @@ export default class ProductsSource extends MongoDataSource {
         return await this.collection.findOne({_id: new ObjectId(id)})
     }
 
+    async getAllProducts() {
+        return await this.collection.find({}).toArray();
+    }
+
     async getProductsByIds(productsIds) {
         productsIds = sanitize(productsIds);
         if (!productsIds || productsIds.length === 0) return []

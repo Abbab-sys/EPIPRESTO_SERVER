@@ -15,6 +15,15 @@ input VendorAccountInput{
     username:String!
     password:String!
 }
+input ClientAccountInput{
+    firstName:String!
+    lastName:String!
+    email:String!
+    phone:String!
+    username:String!
+    password:String!
+    address:String!
+}
 input ProductInput{
     title:String!
     description:String

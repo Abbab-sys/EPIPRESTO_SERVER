@@ -1,4 +1,3 @@
-
 const outputsResolvers = {
     VendorAccount: {
         store: async (parent, _, {dataSources: {stores}}) => {
@@ -6,33 +5,54 @@ const outputsResolvers = {
         }
     },
     Store: {
-        products: async (mongoStoreObject, {first, offset,searchText}, {dataSources: {products}}) => {
-            const productsIds = mongoStoreObject.productsIds
-            const mongoProductsObjects= await products.getProductsByIds(productsIds)
+        products: async (mongoStoreObject, {first, offset, searchText}, {dataSources: {products}}) => {
+            if (!mongoStoreObject.ADMIN) {
+                const productsIds = mongoStoreObject.productsIds
+                const mongoProductsObjects = await products.getProductsByIds(productsIds)
+                if (searchText) {
+                    return mongoProductsObjects.filter(product => product.title.toLowerCase().includes(searchText.toLowerCase())).slice(offset, offset + first)
+                }
+                return mongoProductsObjects.slice(offset, offset + first)
+            }
+            const mongoProductsObjects = await products.getAllProducts()
             if (searchText) {
-               return  mongoProductsObjects.filter(product => product.title.toLowerCase().includes(searchText.toLowerCase())).slice(offset, offset + first)
+                return mongoProductsObjects.filter(product => product.title.toLowerCase().includes(searchText.toLowerCase())).slice(offset, offset + first)
             }
             return mongoProductsObjects.slice(offset, offset + first)
+
         },
         orders: async (mongoStoreObject, _, {dataSources: {orders, productsVariants, products}}) => {
-            const ordersIds = mongoStoreObject.orders
-            const ordersObjects = await orders.getOrdersByIds(ordersIds)
-            for (const order of ordersObjects) {
-                order.productsVariantsOrdered.filter(async ({relatedProductVariantId}) => {
-                    const productVariant = await productsVariants.findOneById(relatedProductVariantId)
-                    if (!productVariant || !productVariant.relatedProductId) return false
-                    const product = await products.findOneById(productVariant.relatedProductId)
-                    return product.relatedStoreId === mongoStoreObject._id
-                })
+            if (!mongoStoreObject.ADMIN) {
+                const ordersIds = mongoStoreObject.orders
+                const ordersObjects = await orders.getOrdersByIds(ordersIds)
+                for (const order of ordersObjects) {
+                    order.productsVariantsOrdered.filter(async ({relatedProductVariantId}) => {
+                        const productVariant = await productsVariants.findOneById(relatedProductVariantId)
+                        if (!productVariant || !productVariant.relatedProductId) return false
+                        const product = await products.findOneById(productVariant.relatedProductId)
+                        return product.relatedStoreId === mongoStoreObject._id
+                    })
+                }
+                return ordersObjects
             }
-            return ordersObjects
+            return await orders.getAllOrders()
+
         },
-        chats: async (mongoClientObject, _, {dataSources: {chats}}) => {
-            const chatsIds = mongoClientObject.chats
-            return await chats.getChatsByIds(chatsIds)
+        chats: async (mongoStoreObject, _, {dataSources: {chats}}) => {
+            if (!mongoStoreObject.ADMIN) {
+                const chatsIds = mongoStoreObject.chats
+                return await chats.getChatsByIds(chatsIds)
+            }
+            return await chats.getAllChats()
         },
         relatedVendor: async (mongoStoreObject, _, {dataSources: {vendors}}) => {
             return await vendors.findOneById(mongoStoreObject.relatedVendorId)
+        },
+        disponibilities: async (mongoStoreObject, _) => {
+            if (!mongoStoreObject.ADMIN) {
+                return mongoStoreObject.disponibilities
+            }
+            return []
         }
     },
     Product: {
@@ -53,7 +73,7 @@ const outputsResolvers = {
         displayName: async (mongoProductVariantObject, _, {dataSources: {products}}) => {
             const relatedProductId = mongoProductVariantObject.relatedProductId
             const relatedProduct = await products.findOneById(relatedProductId)
-            return relatedProduct.title+" : "+mongoProductVariantObject.variantTitle
+            return relatedProduct.title + " : " + mongoProductVariantObject.variantTitle
         }
     },
     Order: {
@@ -94,11 +114,11 @@ const outputsResolvers = {
         }
     },
     ClientAccount: {
-        orders: async (mongoClientObject, _,{dataSources: {orders}}) => {
+        orders: async (mongoClientObject, _, {dataSources: {orders}}) => {
             const ordersIds = mongoClientObject.orders
             return await orders.getOrdersByIds(ordersIds)
         },
-        chats: async (mongoClientObject, _,{dataSources: {chats}}) => {
+        chats: async (mongoClientObject, _, {dataSources: {chats}}) => {
             const chatsIds = mongoClientObject.chats
             return await chats.getChatsByIds(chatsIds)
         }

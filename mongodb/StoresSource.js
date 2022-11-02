@@ -4,14 +4,16 @@ import sanitize from 'mongo-sanitize';
 
 export default class StoresSource extends MongoDataSource {
     async updateOne(storeId, updateValues) {
-        storeId=sanitize(storeId);
-        const query= {_id: new ObjectId(storeId)};
+        storeId = sanitize(storeId);
+        const query = {_id: new ObjectId(storeId)};
         return await this.collection.updateOne(query, updateValues);
     }
+
     async findOneById(id) {
-        id=sanitize(id);
+        id = sanitize(id);
         return await this.collection.findOne({_id: new ObjectId(id)})
     }
+
     async createNewStore(shopName, shopAddress) {
         return (await this.collection.insertOne({
             name: shopName,
@@ -19,13 +21,14 @@ export default class StoresSource extends MongoDataSource {
             disponibilities: [],
             isOpen: true,
             productsIds: [],
+            ADMIN: false,
             orders: [],
             chats: [],
         })).insertedId
     }
 
     async addShopifySyncToStore(storeId, apiToken, shopDomain) {
-        storeId=sanitize(storeId);
+        storeId = sanitize(storeId);
         const query = {_id: new ObjectId(storeId)};
         const synchronizationValues = {
             $set: {
@@ -39,7 +42,7 @@ export default class StoresSource extends MongoDataSource {
         return {code: 406, message: "MongoDB update failed"};
     }
 
-    async addWoocommerceSyncToStore(storeId, consumerKey,consumerSecretKey, shopDomain) {
+    async addWoocommerceSyncToStore(storeId, consumerKey, consumerSecretKey, shopDomain) {
         const query = {_id: new ObjectId(storeId)};
         const synchronizationValues = {
             $set: {
@@ -56,24 +59,28 @@ export default class StoresSource extends MongoDataSource {
 
     async findStoresToSynchronize() {
         return await this.collection.find({
-            apiType: {"$in": ["SHOPIFY","WOOCOMMERCE"]} // TODO add this to a global const
+            apiType: {"$in": ["SHOPIFY", "WOOCOMMERCE"]} // TODO add this to a global const
         }).toArray();
     }
+
     async updateStoreById(storeId, fieldsToUpdate) {
         const query = {_id: new ObjectId(storeId)};
         const updateValues = {$set: fieldsToUpdate};
         return await this.collection.updateOne(query, updateValues);
     }
+
     async addNewProductToStore(storeId, newProductId) {
         const query = {_id: new ObjectId(storeId)};
         const updateProducts = {$push: {productsIds: newProductId}};
         return await this.collection.updateOne(query, updateProducts);
     }
+
     async removeProductFromStore(storeId, productId) {
         const query = {_id: new ObjectId(storeId)};
         const updateProducts = {$pull: {productsIds: productId}};
         return await this.collection.updateOne(query, updateProducts);
     }
+
     async getStoresByIds(storesIds) {
         if (!storesIds || storesIds.length === 0) return []
         return await this.collection.find({
@@ -85,13 +92,12 @@ export default class StoresSource extends MongoDataSource {
     async getStoreById(storeId) {
         return await this.collection.findOne({_id: new ObjectId(storeId)})
     }
+
     async submitOrderToStore(storeId, orderId) {
         const query = {_id: new ObjectId(storeId)};
         const updateOrders = {$push: {orders: orderId}};
         return await this.collection.updateOne(query, updateOrders);
     }
-
-
 
 
 }

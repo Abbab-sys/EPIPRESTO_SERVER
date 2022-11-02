@@ -36,6 +36,20 @@ const mutationsResolvers = {
                 return {code: 406, message: e.message}
             }
         },
+        clientSignUp: async (parent, {accountInput}, {dataSources: {clients}}) => {
+            try {
+                const newClientAccount = await clients.signUp(accountInput)
+                // const newToken = await verificationTokens.createVendorToken(newVendorAccount._id)
+                // sendConfirmationEmail(newVendorAccount.email, newToken.toString())
+                return {
+                    code: 200,
+                    message: "Client account created successfully",
+                }
+            } catch (e) {
+                return {code: 406, message: e.message}
+            }
+
+        },
         verifyVendorAccount: async (parent, {token}, {dataSources: {vendors, verificationTokens}}) => {
             const {relatedVendorId, relatedClientId} = await verificationTokens.findOneById(token)
             if (relatedVendorId) {
