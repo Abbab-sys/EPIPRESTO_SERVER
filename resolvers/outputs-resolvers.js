@@ -1,3 +1,5 @@
+import { getCoordinates } from "../geolocalisation/Geolocalisation.js";
+
 const outputsResolvers = {
     VendorAccount: {
         store: async (parent, _, {dataSources: {stores}}) => {
@@ -121,6 +123,15 @@ const outputsResolvers = {
         chats: async (mongoClientObject, _, {dataSources: {chats}}) => {
             const chatsIds = mongoClientObject.chats
             return await chats.getChatsByIds(chatsIds)
+        },
+        nearbyShops: async (mongoClientObject, {distance}, {dataSources: {stores}}) => {
+            const clientAddress = mongoClientObject.address
+            const clientCoordinates = await getCoordinates(clientAddress);
+            
+            const coordinatesArray= [clientCoordinates.lng, clientCoordinates.lat]
+            const distanceInMeters = distance * 1000
+
+            return await stores.getStoresByDistance(coordinatesArray,distanceInMeters);
         }
     },
     Chat: {
