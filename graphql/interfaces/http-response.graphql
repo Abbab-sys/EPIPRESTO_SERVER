@@ -17,6 +17,7 @@ type StoreResponse implements HttpResponseInterface{
     message:String!
     store:Store
 }
+
 type VendorAccountResponse implements HttpResponseInterface{
     code:Int!
     message:String!

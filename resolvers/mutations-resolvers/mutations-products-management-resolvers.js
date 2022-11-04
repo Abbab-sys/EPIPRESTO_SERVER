@@ -1,5 +1,4 @@
 import {ObjectId} from "mongodb";
-
 const mutationsProductsManagementResolvers = {
     addNewVariantToProduct: async (parent, args, {dataSources: {productsVariants, products}}) => {
         const {productId, newVariant} = args

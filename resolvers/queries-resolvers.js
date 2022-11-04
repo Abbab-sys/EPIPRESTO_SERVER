@@ -15,7 +15,7 @@ const queriesResolvers = {
         ...queriesVendorsLoginResolvers,
         ...queriesClientsLoginResolvers,
         ...queriesGettersByIdResolvers,
-        ...queriesAnalyticsResolvers
+        ...queriesAnalyticsResolvers,
     },
 };
 export {queriesResolvers}
