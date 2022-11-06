@@ -14,6 +14,21 @@ const queriesGettersByIdResolvers = {
             }
         }
     },
+    getClientById: async (_, args, {dataSources: {clients}}) => {
+        const result = await clients.findOneById(args.idClient)
+        if (result) {
+            return {
+                code: 200,
+                message: "Client found",
+                clientAccount: result
+            }
+        } else {
+            return {
+                code: 404,
+                message: "Client not found"
+            }
+        }
+    },
     getProductVariantById: async (_, args, {dataSources: {productsVariants}}) => {
         const result = await productsVariants.findOneById(args.idVariant)
         if (result) {

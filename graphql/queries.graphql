@@ -11,5 +11,6 @@ type Query{
     getProductById(idProduct:ID!):ProductResponse!
     getProductVariantById(idVariant:ID!):ProductVariantResponse!
     getOrderById(idOrder:ID!):OrderResponse!
+    getClientById(idClient:ID!):ClientAccountResponse!
     getAnalytics(idStore:ID!,dateFrom:Date!,dateTo:Date!):AnalyticsResponse!
 }
