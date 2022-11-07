@@ -19,16 +19,19 @@ const queriesResolvers = {
         ...queriesClientsLoginResolvers,
         ...queriesGettersByIdResolvers,
         ...queriesAnalyticsResolvers,
-        getStripe: async () => {
+
+        getStripe: async(_, {variantsToOrder}, {dataSources: {productsVariants}}) => {
+
             const stripe = stripePackage.Stripe('sk_live_bA0XUdrZQUUlbt0CuN4Y7kQp000wUU5OiN');
             // Use an existing Customer ID if this is a returning customer.
+            const subTotal = await productsVariants.getTotalPriceOfProductVariants(variantsToOrder);
             const customer = await stripe.customers.create();
             const ephemeralKey = await stripe.ephemeralKeys.create(
                 {customer: customer.id},
                 {apiVersion: '2022-08-01'}
             );
             const paymentIntent = await stripe.paymentIntents.create({
-                amount: 1099,
+                amount: subTotal,
                 currency: 'eur',
                 customer: customer.id,
                 automatic_payment_methods: {
