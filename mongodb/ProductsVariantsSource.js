@@ -1,8 +1,11 @@
 import {MongoDataSource} from "apollo-datasource-mongodb";
 import {ObjectId} from "mongodb";
 import sanitize from 'mongo-sanitize';
+import ProductsSource from "./ProductsSource.js";
 
 export default class ProductsVariantsSource extends MongoDataSource {
+    productsSource = new ProductsSource(db.collection(process.env.DATABASE_PRODUCTS_COLLECTION))
+
     async findOneById(id) {
         id = sanitize(id);
         return await this.collection.findOne({_id: new ObjectId(id)})
@@ -23,9 +26,18 @@ export default class ProductsVariantsSource extends MongoDataSource {
         }).toArray();
     }
 
+    async getRelatedStoreId(variantId) {
+        const relatedProductId = await this.getRelatedProductId(variantId);
+        return await this.productsSource.getRelatedStoreId(relatedProductId);
+    }
+
+    async getRelatedProductId(variantId) {
+        variantId = sanitize(variantId);
+        let variant = await this.findOneById(variantId);
+        return variant.relatedProductId;
+    }
+
     async createProductVariant(productVariant) {
-        // const {insertedId} = await this.collection.insertOne(productVariant);
-        // return insertedId;
         const {insertedId} = await this.collection.insertOne(productVariant);
         return insertedId;
     }
@@ -68,6 +80,41 @@ export default class ProductsVariantsSource extends MongoDataSource {
         }
         return totalPrice;
     }
+
+    async getTaxsOfProductVariants(variantsToOrder) {
+        variantsToOrder = sanitize(variantsToOrder);
+        let totalTax = 0;
+        for (let i = 0; i < variantsToOrder.length; i++) {
+            let variant = variantsToOrder[i];
+            const {taxable} = await this.findOneById(variant.id);
+            if (taxable) {
+                let price = await this.getVariantPriceById(variant.id);
+                totalTax += price * variant.quantity * 0.14975;
+            }
+        }
+        return totalTax;
+    }
+
+    async getDeliveryCostOfProductVariants(variantsToOrder) {
+        variantsToOrder = sanitize(variantsToOrder);
+        let totalDeliveryCost = 0;
+        const stores = new Set();
+        for (let i = 0; i < variantsToOrder.length; i++) {
+            stores.add(await this.getRelatedStoreId(variantsToOrder[i].id))
+        }
+        if (stores.size > 0) {
+            totalDeliveryCost = 9.99 + (stores.size - 1) * 2.99;
+        }
+        return totalDeliveryCost;
+
+    }
+
+    async getVariantStoreId(id) {
+        id = sanitize(id);
+        let variant = await this.findOneById(id);
+        return variant.relatedStoreId;
+    }
+
     async getVariantPriceById(id) {
         id = sanitize(id);
         let variant = await this.findOneById(id);

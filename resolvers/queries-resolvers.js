@@ -25,13 +25,16 @@ const queriesResolvers = {
             const stripe = stripePackage.Stripe('sk_live_bA0XUdrZQUUlbt0CuN4Y7kQp000wUU5OiN');
             // Use an existing Customer ID if this is a returning customer.
             const subTotal = await productsVariants.getTotalPriceOfProductVariants(variantsToOrder);
+            const taxs= await productsVariants.getTaxsOfProductVariants(variantsToOrder);
+            const deliveryCost = await productsVariants.getDeliveryCostOfProductVariants(variantsToOrder);
+            const total = subTotal + taxs + deliveryCost;
             const customer = await stripe.customers.create();
             const ephemeralKey = await stripe.ephemeralKeys.create(
                 {customer: customer.id},
                 {apiVersion: '2022-08-01'}
             );
             const paymentIntent = await stripe.paymentIntents.create({
-                amount: subTotal,
+                amount: total,
                 currency: 'eur',
                 customer: customer.id,
                 automatic_payment_methods: {

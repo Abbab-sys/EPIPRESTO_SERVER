@@ -20,6 +20,12 @@ export default class ProductsSource extends MongoDataSource {
         }).toArray();
     }
 
+    async getRelatedStoreId(productId) {
+        productId = sanitize(productId);
+        const {relatedStoreId} = await this.collection.findOne({_id: new ObjectId(productId)}, {projection: {relatedStoreId: 1}});
+        return relatedStoreId;
+    }
+
     //create product
     async createProduct(product) {
         const {variants, ...productWithoutVariants} = product;
