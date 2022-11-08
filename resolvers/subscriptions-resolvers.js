@@ -1,7 +1,7 @@
-import {PubSub} from "graphql-subscriptions";
 import { withFilter } from 'graphql-subscriptions';
+import { MQTTPubSub } from 'graphql-mqtt-subscriptions';
 
-export const PUB_SUB = new PubSub();
+export const PUB_SUB = new MQTTPubSub();
 
 // Create subscription resolvers
 export const subscriptionResolvers = {
