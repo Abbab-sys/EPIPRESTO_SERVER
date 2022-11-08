@@ -1,8 +1,10 @@
 import {
     graphqlUpdateProductFields, graphqlUpdateProductVariantFields,
     graphqlUpdateStoreFields,
-    graphqlUpdateVendorAccountFields
+    graphqlUpdateVendorAccountFields,
+    graphqlUpdateClientAccountFields
 } from "../updates-accepted-fields.js";
+import { PUB_SUB } from "../subscriptions-resolvers.js";
 
 const mutationsUpdatesResolvers = {
     updateStore: async (parent, args, {dataSources: {stores}}) => {
@@ -92,6 +94,32 @@ const mutationsUpdatesResolvers = {
             }
         }
         return {code: 200, message: "Product variants updated"};
+    },
+    updateClientAccount: async (parent, args, {dataSources: {clients}}) => {
+        const {clientId, fieldsToUpdate} = args;
+        const cleanedFieldsToUpdate = {};
+        for (const [key, value] of Object.entries(fieldsToUpdate)) {
+            if (key in graphqlUpdateClientAccountFields && value !== null) {
+                cleanedFieldsToUpdate[key] = value
+            }
+        }
+
+        const updateResult = await clients.updateClientById(clientId, cleanedFieldsToUpdate);
+
+        if(cleanedFieldsToUpdate["address"]){
+
+
+            PUB_SUB.publish("ADDRESS_CHANGED", {addressChanged:clientId})
+        }
+
+        if (updateResult.matchedCount) {
+            return {
+                code: 200,
+                message: "Client updated",
+                clientAccount: await clients.findOneById(clientId)
+            }
+        }
+        return {code: 406, message: "Database failed to update client account"};
     }
 
 };

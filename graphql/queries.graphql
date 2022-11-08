@@ -8,6 +8,7 @@ type Query{
     isClientUsernameUsed(username:String!):Boolean!
     isClientEmailUsed(email:String!):Boolean!
     getStoreById(idStore:ID!):StoreResponse!
+    getClientAccountById(idClient:ID!):ClientAccountResponse!
     getProductById(idProduct:ID!):ProductResponse!
     getProductVariantById(idVariant:ID!):ProductVariantResponse!
     getOrderById(idOrder:ID!):OrderResponse!

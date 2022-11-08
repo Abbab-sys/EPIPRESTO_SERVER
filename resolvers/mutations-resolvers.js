@@ -1,4 +1,4 @@
-import {getWooCommerceProductsWithCredentials} from "../sync/woocommerce/syncWooCommerce.js";
+import {getWooCommerceProductsWithCredentials} from "../sync/woocommerce/SyncWoocommerce.js";
 import {
     graphqlUpdateProductFields,
     graphqlUpdateStoreFields,

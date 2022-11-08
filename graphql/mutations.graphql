@@ -13,6 +13,7 @@ type Mutation{
     updateProduct(productId:ID!,fieldsToUpdate:UpdateProduct!): ProductResponse!
     updateStore(storeId:ID!,fieldsToUpdate:UpdateStore!): StoreResponse!
     updateVendorAccount(vendorId:ID!,fieldsToUpdate:UpdateVendorAccount!): VendorAccountResponse!
+    updateClientAccount(clientId:ID!,fieldsToUpdate:UpdateClientAccount!): ClientAccountResponse!
 
     addNewVariantToProduct(productId:ID!,newVariant:ProductVariantInput!):HttpResponse!
     addNewVariantsToProduct(productId:ID!,newVariants:[ProductVariantInput!]!):HttpResponse!
