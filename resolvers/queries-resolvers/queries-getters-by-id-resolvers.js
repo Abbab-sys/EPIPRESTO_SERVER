@@ -44,6 +44,21 @@ const queriesGettersByIdResolvers = {
             }
         }
     },
+    getClientAccountById: async (_, args, {dataSources: {clients}}) => {
+        const result = await clients.findOneById(args.idClient)
+        if (result) {
+            return {
+                code: 200,
+                message: "Client found",
+                clientAccount: result
+            }
+        } else {
+            return {
+                code: 404,
+                message: "Client not found"
+            }
+        }
+    },
     getOrderById: async (_, args, {dataSources: {orders}}) => {
         const result = await orders.findOneById(args.idOrder)
         if (result) {
