@@ -95,7 +95,7 @@ export default class ProductsVariantsSource extends MongoDataSource {
         let totalPrice = 0;
         for (let i = 0; i < variantsToOrder.length; i++) {
             let variant = variantsToOrder[i];
-            let price = await this.getVariantPriceById(variant.id);
+            let price = await this.getVariantPriceById(variant.variantId);
             totalPrice += price * variant.quantity;
         }
         return totalPrice;
@@ -106,9 +106,9 @@ export default class ProductsVariantsSource extends MongoDataSource {
         let totalTax = 0;
         for (let i = 0; i < variantsToOrder.length; i++) {
             let variant = variantsToOrder[i];
-            const {taxable} = await this.findOneById(variant.id);
+            const {taxable} = await this.findOneById(variant.variantId);
             if (taxable) {
-                let price = await this.getVariantPriceById(variant.id);
+                let price = await this.getVariantPriceById(variant.variantId);
                 totalTax += price * variant.quantity * 0.14975;
             }
         }
@@ -120,7 +120,7 @@ export default class ProductsVariantsSource extends MongoDataSource {
         let totalDeliveryCost = 0;
         const stores = new Set();
         for (let i = 0; i < variantsToOrder.length; i++) {
-            stores.add(await this.getRelatedStoreId(variantsToOrder[i].id))
+            stores.add(await this.getRelatedStoreId(variantsToOrder[i].variantId))
         }
         if (stores.size > 0) {
             totalDeliveryCost = 9.99 + (stores.size - 1) * 2.99;
