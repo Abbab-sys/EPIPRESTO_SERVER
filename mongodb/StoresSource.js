@@ -18,19 +18,88 @@ export default class StoresSource extends MongoDataSource {
   async createNewStore(shopName, shopAddress) {
     
     //When a store is created, we need to get its coordinates and save them in the database
-    let coordinates = await getCoordinates(address)       
+    let coordinates = await getCoordinates(shopAddress)       
 
     //GeoJSON , lng first, lat second
     const locationObject={
         type: "Point",
         coordinates:[parseFloat(coordinates.lng), parseFloat(coordinates.lat)]
     }
+
+    const defaultDisponibilities = [
+      {
+        day: "MONDAY",
+        activeHours:[
+          {
+            openingHour: "09:00",
+            endingHour: "21:00",
+          }
+        ]
+      },
+      {
+        day: "TUESDAY",
+        activeHours:[
+          {
+            openingHour: "09:00",
+            endingHour: "21:00",
+          }
+        ]
+        },
+        {
+          day: "WEDNESDAY",
+          activeHours:[
+            {
+              openingHour: "09:00",
+              endingHour: "21:00",
+            }
+          ]
+        },
+        {
+          day: "THURSDAY",
+          activeHours:[
+            {
+              openingHour: "09:00",
+              endingHour: "21:00",
+            }
+          ]
+        },
+        
+          {
+            day: "FRIDAY",
+            activeHours:[
+              {
+                openingHour: "09:00",
+                endingHour: "21:00",
+              }
+            ]
+          },
+          {
+            day: "SATURDAY",
+            activeHours:[
+              {
+                openingHour: "09:00",
+                endingHour: "21:00",
+              }
+            ]
+            },
+          {
+              day: "SUNDAY",
+              activeHours:[
+                {
+                  openingHour: "09:00",
+                  endingHour: "21:00",
+                }
+              ]
+          },
+
+    ]
+
     return (
       await this.collection.insertOne({
         name: shopName,
         address: shopAddress,
         location: locationObject,
-        disponibilities: [],
+        disponibilities: defaultDisponibilities,
         isOpen: true,
         productsIds: [],
         ADMIN: false,
