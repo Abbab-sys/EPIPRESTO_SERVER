@@ -29,7 +29,7 @@ export default class StoresSource extends MongoDataSource {
     const defaultDisponibilities = [
       {
         day: "MONDAY",
-        activeHours:[
+        activesHours:[
           {
             openingHour: "09:00",
             endingHour: "21:00",
@@ -38,7 +38,7 @@ export default class StoresSource extends MongoDataSource {
       },
       {
         day: "TUESDAY",
-        activeHours:[
+        activesHours:[
           {
             openingHour: "09:00",
             endingHour: "21:00",
@@ -47,7 +47,7 @@ export default class StoresSource extends MongoDataSource {
         },
         {
           day: "WEDNESDAY",
-          activeHours:[
+          activesHours:[
             {
               openingHour: "09:00",
               endingHour: "21:00",
@@ -56,7 +56,7 @@ export default class StoresSource extends MongoDataSource {
         },
         {
           day: "THURSDAY",
-          activeHours:[
+          activesHours:[
             {
               openingHour: "09:00",
               endingHour: "21:00",
@@ -66,7 +66,7 @@ export default class StoresSource extends MongoDataSource {
         
           {
             day: "FRIDAY",
-            activeHours:[
+            activesHours:[
               {
                 openingHour: "09:00",
                 endingHour: "21:00",
@@ -75,7 +75,7 @@ export default class StoresSource extends MongoDataSource {
           },
           {
             day: "SATURDAY",
-            activeHours:[
+            activesHours:[
               {
                 openingHour: "09:00",
                 endingHour: "21:00",
@@ -84,7 +84,7 @@ export default class StoresSource extends MongoDataSource {
             },
           {
               day: "SUNDAY",
-              activeHours:[
+              activesHours:[
                 {
                   openingHour: "09:00",
                   endingHour: "21:00",
