@@ -17,6 +17,7 @@ export default class StoresSource extends MongoDataSource {
 
   async createNewStore(shopName, shopAddress) {
     
+    //When a store is created, we need to get its coordinates and save them in the database
     let coordinates = await getCoordinates(address)       
 
     //GeoJSON , lng first, lat second

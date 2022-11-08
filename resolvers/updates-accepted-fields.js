@@ -8,3 +8,4 @@ export const graphqlUpdateStoreFields = graphQLSchema.getTypeMap().UpdateStore.g
 export const graphqlUpdateProductFields = graphQLSchema.getTypeMap().UpdateProduct.getFields()
 export const graphqlUpdateProductVariantFields = graphQLSchema.getTypeMap().UpdateProductVariant.getFields()
 export const graphqlUpdateVendorAccountFields = graphQLSchema.getTypeMap().UpdateVendorAccount.getFields()
+export const graphqlUpdateClientAccountFields = graphQLSchema.getTypeMap().UpdateClientAccount.getFields()
