@@ -20,6 +20,19 @@ export const subscriptionResolvers = {
                 },
             ),
         },
+        addressChanged: {
+            subscribe: withFilter(
+                () => PUB_SUB.asyncIterator('ADDRESS_CHANGED'),
+                (payload, variables,context,info) => {
+                    // Only push an update if the comment is on
+                    // the correct repository for this operation
+
+                    return (
+                        (variables.clientId &&variables.clientId.toString()===payload.addressChanged )
+                    );
+                },
+            ),
+        },
     },
     // ...other resolvers...
 };

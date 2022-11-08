@@ -1,3 +1,4 @@
 type Subscription {
     messageSent(storeId:ID,clientId:ID): Message
+    addressChanged(clientId:ID!):ID!
 }

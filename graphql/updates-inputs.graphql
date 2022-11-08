@@ -45,3 +45,12 @@ input UpdateVendorAccount{
     phone:String
     username:String
 }
+input UpdateClientAccount{
+    firstName:String
+    lastName:String
+    email:String
+    password:String
+    phone:String
+    username:String
+    address:String
+}
