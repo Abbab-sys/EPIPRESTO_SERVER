@@ -46,6 +46,7 @@ export async function sendBulkOperationMutation(
                 title
                 tags
                 publishedAt
+                description
                 variants(first: 100) {
                 edges {
                 node {
@@ -282,6 +283,7 @@ function mapProduct(product, variants, store) {
         title: product.title,
         vendor: store.name,
         tags: product.tags,
+        description: product.description,
         imgSrc: product.featuredImage ? product.featuredImage.url : "",
         relatedStoreId: store._id,
         brand: "",
