@@ -4,6 +4,7 @@ import StoresSource from "./mongodb/StoresSource.js";
 import { MongoClient } from "mongodb";
 import * as dotenv from "dotenv";
 import { updateProduct } from "./sync/shopify/updateProduct.js";
+import {createProduct} from "./sync/shopify/createProduct.js";
 dotenv.config();
 
 const app = express();
@@ -58,7 +59,8 @@ app.post("/webhooks/shopify/get-all-products/:id", async (req, res) => {
  *  @param {any} req: the request
   * @param {any} res: the response
     @return 200 HTTP code
- */ app.post("/webhooks/shopify/update-product/:id", async (req, res) => {
+ */
+app.post("/webhooks/shopify/update-product/:id", async (req, res) => {
   console.log("webhook update product");
   const store_id = req.params.id;
   const storesSource = new StoresSource(
@@ -84,8 +86,31 @@ app.post("/webhooks/shopify/delete-product/:id", async (req, res) => {
   res.status(200).send("OK");
 });
 
-//TODO: Webhook pour create un produit d'un store
-app.post("/webhooks/shopify/create-product/:id", async (req, res) => {
+/**
+ *
+ *  Endpoint to create a product from shopify (Only called by Shopify webhook) when a product has been created
+ *  @param {any} req: the request
+  * @param {any} res: the response
+    @return 200 HTTP code
+ */app.post("/webhooks/shopify/create-product/:id", async (req, res) => {
+
+  console.log("webhook create product");
+  const store_id = req.params.id;
+  const storesSource = new StoresSource(
+    client.db("Epipresto-dev").collection("Stores")
+  );
+
+  const store = await storesSource.getStoreById(store_id);
+
+  if (store) {
+    const result = createProduct(
+      client,
+      store.shopifyShopDomain,
+      store.shopifyApiToken,
+      store,
+      req.body
+    );
+  }
   res.status(200).send("OK");
 });
 

@@ -155,9 +155,7 @@ export async function updateProduct(
       });
   }
 
-    await storesSource.updateStoreById(store._id, {
-      lastShopifySyncDate: new Date().toISOString().slice(0, 19),
-    });
+  
 
 
   return "updateProduct called successfully";
