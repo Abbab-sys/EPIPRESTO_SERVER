@@ -20,9 +20,9 @@ const mutationsResolvers = {
         ...mutationsProductsManagementResolvers,
         ...mutationsOrdersResolvers,
         vendorSignUp: async (parent, {accountInput}, {dataSources: {vendors, stores, verificationTokens}}) => {
-            const {shopName, address} = accountInput
+            const {shopName, address,shopCategory} = accountInput
             try {
-                accountInput.storeId = await stores.createNewStore(shopName, address)
+                accountInput.storeId = await stores.createNewStore(shopName, address,shopCategory)
                 const newVendorAccount = await vendors.signUp(accountInput)
                 await stores.updateOne(newVendorAccount.storeId, {$set:{relatedVendorId: newVendorAccount._id}})
                 const newToken = await verificationTokens.createVendorToken(newVendorAccount._id)

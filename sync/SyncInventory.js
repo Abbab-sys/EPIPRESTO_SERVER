@@ -9,18 +9,20 @@ async function syncProducts(mongoClient) {
 
     for (const store of storesToSync) {
         if (store.shopifyShopDomain){
-            //check if the store has a lastShopifySyncDate, if not it means its the first time we sync the store. if yes, continue to the next store
-            if (!store.lastShopifySyncDate) {
-                console.log('NEW SHOPIFY STORE, SYNCING ALL PRODUCTS...')
-                await sendBulkOperationMutation(store.shopifyShopDomain,store.shopifyApiToken,store._id)
 
-                //SUBSCRIBE TO PRODUCT UPDATE WEBHOOK
-                await subscribeToProductUpdateWebHook(store.shopifyShopDomain,store.shopifyApiToken,store._id)
+            //Idee: pour shopify, on subscribe deja a tout lors de la creation du store, donc on a pas besoin diterer sur les produits shopify ici, vu qu'on utilise des webhook
+            // if (!store.lastShopifySyncDate) {
+            //     console.log('NEW SHOPIFY STORE, SYNCING ALL PRODUCTS...')
+            //     //Syncronize all products
+            //     await sendBulkOperationMutation(store.shopifyShopDomain,store.shopifyApiToken,store._id)
 
-                //TODO SUBSCRIBE TO PRODUCT DELETE WEBHOOK
-                //TODO SUBSCRIBE TO PRODUCT CREATE WEBHOOK
-            }
-            else continue;
+            //     //Subscribe to the product update webhook
+            //     await subscribeToProductUpdateWebHook(store.shopifyShopDomain,store.shopifyApiToken,store._id)
+
+            //     //TODO SUBSCRIBE TO PRODUCT DELETE WEBHOOK
+            //     //TODO SUBSCRIBE TO PRODUCT CREATE WEBHOOK
+            // }
+             continue;
         }
          else if (store.woocommerceShopDomain) await syncWooCommerceProducts(mongoClient,store)
     }

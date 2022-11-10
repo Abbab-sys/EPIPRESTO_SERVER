@@ -14,6 +14,7 @@ type Store{
     isOpen:Boolean!
     products(first:Int,offset:Int!,searchText:String):[Product!]!
     disponibilities:[Disponibility!]!
+    shopCategory:String
     orders:[Order!]!
     chats:[Chat!]!
 }
@@ -34,6 +35,7 @@ type Product{
     _id:ID!
     relatedStore:Store!
     title:String!
+    description:String
     brand:String
     published:Boolean!
     tags:[String!]!
