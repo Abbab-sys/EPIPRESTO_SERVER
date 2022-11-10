@@ -72,6 +72,12 @@ const outputsResolvers = {
             const relatedProductId = mongoProductVariantObject.relatedProductId
             return await products.findOneById(relatedProductId)
         },
+        relatedStore: async (mongoProductVariantObject, _, {dataSources: {products,stores}}) => {
+            const relatedProductId = mongoProductVariantObject.relatedProductId
+            const product = await products.findOneById(relatedProductId)
+            const relatedStoreId = product.relatedStoreId
+            return await stores.findOneById(relatedStoreId)
+        },
         displayName: async (mongoProductVariantObject, _, {dataSources: {products}}) => {
             const relatedProductId = mongoProductVariantObject.relatedProductId
             const relatedProduct = await products.findOneById(relatedProductId)
@@ -127,7 +133,7 @@ const outputsResolvers = {
         nearbyShops: async (mongoClientObject, {distance}, {dataSources: {stores}}) => {
             const clientAddress = mongoClientObject.address
             const clientCoordinates = await getCoordinates(clientAddress);
-            
+
             const coordinatesArray= [clientCoordinates.lng, clientCoordinates.lat]
             const distanceInMeters = distance * 1000
 

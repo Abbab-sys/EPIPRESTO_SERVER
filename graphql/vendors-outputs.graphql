@@ -45,6 +45,7 @@ type Product{
 type ProductVariant{
     _id:ID!
     relatedProduct:Product!
+    relatedStore:Store!
     displayName:String!
     variantTitle:String!
     availableForSale:Boolean!
