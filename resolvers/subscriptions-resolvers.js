@@ -1,7 +1,14 @@
-import { withFilter } from 'graphql-subscriptions';
-import { MQTTPubSub } from 'graphql-mqtt-subscriptions';
+import {withFilter} from 'graphql-subscriptions';
+import {connect} from 'mqtt';
+import {MQTTPubSub} from 'graphql-mqtt-subscriptions';
 
-export const PUB_SUB = new MQTTPubSub();
+const client = connect('mqtt://localhost:1883', {
+    reconnectPeriod: 1000,
+});
+
+export const PUB_SUB = new MQTTPubSub({
+    client
+});
 
 // Create subscription resolvers
 export const subscriptionResolvers = {
