@@ -1,6 +1,7 @@
 import {getWooCommerceProductsWithCredentials} from "../../sync/woocommerce/SyncWoocommerce.js";
 import { testShopifyRequest } from "../../sync/shopify/TestSyncCredentials.js";
 import { subscribeToProductUpdateWebHook } from "../../sync/shopify/updateProduct.js";
+import {subscribeToProductCreateWebHook} from "../../sync/shopify/createProduct.js";
 import { sendBulkOperationMutation } from "../../sync/shopify/SyncAllProducts.js";
 import {syncWooCommerceProducts} from "../../sync/woocommerce/SyncWoocommerce.js";
 const mutationsSyncResolvers = {
@@ -48,8 +49,10 @@ const mutationsSyncResolvers = {
             //Subscribe to product update webhook
             await subscribeToProductUpdateWebHook(shopDomain, apiToken, user.storeId)
 
+            await subscribeToProductCreateWebHook(shopDomain, apiToken, user.storeId)
+
             //TODO: Subscribe to product delete webhook
-            //TODO: Subscribe to product create webhook
+
 
             await stores.updateStoreById(user.storeId, {
                 lastShopifySyncDate: new Date().toISOString().slice(0, 19),

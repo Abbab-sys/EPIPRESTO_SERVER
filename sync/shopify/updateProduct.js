@@ -89,6 +89,7 @@ export async function updateProduct(
   if (product && product.relatedStoreId.toString() === store._id.toString()) {
     console.log("product found in db, updating it");
 
+    //TODO: DESCRIPTION
     const updatedProduct = {
       shopifyProductId: shopifyProductId,
       title: shopifyProduct.title,
@@ -104,7 +105,6 @@ export async function updateProduct(
     };
 
 
-    //TODO: REFACTOR VARIANTS PART  , PUT IT IN A FUNCTION
 
     //If the updated product sent by shopify has variants, it means we need to update the variants in our database
     if (shopifyProduct.variants.length > 0) {
@@ -155,9 +155,7 @@ export async function updateProduct(
       });
   }
 
-    await storesSource.updateStoreById(store._id, {
-      lastShopifySyncDate: new Date().toISOString().slice(0, 19),
-    });
+  
 
 
   return "updateProduct called successfully";

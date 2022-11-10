@@ -15,9 +15,8 @@ export default class StoresSource extends MongoDataSource {
     return await this.collection.findOne({ _id: new ObjectId(id) });
   }
 
-  async createNewStore(shopName, shopAddress) {
+  async createNewStore(shopName, shopAddress,shopCategory) {
     
-    //When a store is created, we need to get its coordinates and save them in the database
     let coordinates = await getCoordinates(shopAddress)       
 
     //GeoJSON , lng first, lat second
@@ -100,6 +99,7 @@ export default class StoresSource extends MongoDataSource {
         address: shopAddress,
         location: locationObject,
         disponibilities: defaultDisponibilities,
+        shopCategory: shopCategory,
         isOpen: true,
         productsIds: [],
         ADMIN: false,
