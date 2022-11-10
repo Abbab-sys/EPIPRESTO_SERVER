@@ -145,24 +145,9 @@ app.use(
         },
     }),
 );
-const PORT = 4000;
+const PORT = 443;
 // Now that our HTTP server is fully set up, we can listen to it.
 httpServer.listen(PORT, () => {
     console.log(`Server is now running on http://localhost:${PORT}/graphql`);
 });
 
-
-// server.start().then(({url}) => {
-//     console.log(`🚀  Server ready at ${url}`);
-//
-//     // syncProducts(client).then(() => {
-//     //     console.log("Products synchronized for first time\nWaiting for next sync in 1 hour ...")
-//     // })
-//     // nodeCron.schedule('0 */1 * * *', () => {
-//     //     syncProducts(client).then(() => {
-//     //         console.log("Products synchronized\nWaiting for next sync in 1 hour ...")
-//     //     })
-//     // })
-//
-//
-// });
