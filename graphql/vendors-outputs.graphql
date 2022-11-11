@@ -15,7 +15,7 @@ type Store{
     products(first:Int,offset:Int!,searchText:String):[Product!]!
     disponibilities:[Disponibility!]!
     shopCategory:String
-    orders:[Order!]!
+    orders(idOrder:ID):[Order!]!
     chats:[Chat!]!
 }
 
