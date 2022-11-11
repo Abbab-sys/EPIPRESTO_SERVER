@@ -23,19 +23,40 @@ const outputsResolvers = {
             return mongoProductsObjects.slice(offset, offset + first)
 
         },
-        orders: async (mongoStoreObject, _, {dataSources: {orders, productsVariants, products}}) => {
+        orders: async (mongoStoreObject,{idOrder}, {dataSources: {orders, productsVariants, products}}) => {
             if (!mongoStoreObject.ADMIN) {
                 const ordersIds = mongoStoreObject.orders
                 const ordersObjects = await orders.getOrdersByIds(ordersIds)
-                for (const order of ordersObjects) {
-                    order.productsVariantsOrdered.filter(async ({relatedProductVariantId}) => {
-                        const productVariant = await productsVariants.findOneById(relatedProductVariantId)
+                const returnedOrders = [] 
+
+                for (let i = 0; i < ordersObjects.length; i++) {
+                    const order = ordersObjects[i]
+
+                    
+                    if(idOrder && order._id.toString() !== idOrder) continue;
+                    
+              
+            
+                    const productsVariantsObjects = await Promise.all(order.productsVariantsOrdered.map( ({relatedProductVariantId}) => {
+                        
+                        return productsVariants.findOneById(relatedProductVariantId)
+                    }))
+                    const productsObjects = await Promise.all(productsVariantsObjects.map( ({relatedProductId}) => {
+                        return products.findOneById(relatedProductId)
+                    }))
+
+                    order.productsVariantsOrdered = order.productsVariantsOrdered.filter( ({relatedProductVariantId}) => {
+                        const productVariant = productsVariantsObjects.find(productVariant => productVariant._id.toString() === relatedProductVariantId.toString())
                         if (!productVariant || !productVariant.relatedProductId) return false
-                        const product = await products.findOneById(productVariant.relatedProductId)
-                        return product.relatedStoreId === mongoStoreObject._id
+                        const product = productsObjects.find(product => product._id.toString() === productVariant.relatedProductId.toString())
+                        return product.relatedStoreId.toString() === mongoStoreObject._id.toString()
                     })
+
+                    ordersObjects[i] = order
+                    returnedOrders.push(order)
                 }
-                return ordersObjects
+
+                return returnedOrders;
             }
             return await orders.getAllOrders()
 
