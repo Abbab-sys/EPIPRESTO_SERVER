@@ -89,12 +89,13 @@ export default class ProductsVariantsSource extends MongoDataSource {
     async getTaxsOfProductVariants(variantsToOrder) {
         variantsToOrder = sanitize(variantsToOrder);
         let totalTax = 0;
+        const quebecTaxes = 0.14975
         for (let i = 0; i < variantsToOrder.length; i++) {
             let variant = variantsToOrder[i];
             const {taxable} = await this.findOneById(variant.variantId);
             if (taxable) {
                 let price = await this.getVariantPriceById(variant.variantId);
-                totalTax += price * variant.quantity * 0.14975;
+                totalTax += price * variant.quantity * quebecTaxes;
             }
         }
         return totalTax;
@@ -107,8 +108,10 @@ export default class ProductsVariantsSource extends MongoDataSource {
         for (let i = 0; i < variantsToOrder.length; i++) {
             stores.add(await this.getRelatedStoreId(variantsToOrder[i].variantId))
         }
+        const basicDeliveryFee = 9.99
+        const additionalStoreDeliveryFee = 2.99
         if (stores.size > 0) {
-            totalDeliveryCost = 9.99 + (stores.size - 1) * 2.99;
+            totalDeliveryCost = basicDeliveryFee + (stores.size - 1) * additionalStoreDeliveryFee;
         }
         return totalDeliveryCost;
 
