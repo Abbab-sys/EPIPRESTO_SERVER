@@ -4,3 +4,7 @@ type Stripe {
     customer: ID!
     publishableKey: String!
 }
+input VariantToOrder{
+    quantity: Int!
+    variantId: ID!
+}
