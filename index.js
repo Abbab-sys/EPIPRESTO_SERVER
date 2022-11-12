@@ -29,12 +29,7 @@ import {makeExecutableSchema} from '@graphql-tools/schema';
 import {WebSocketServer} from 'ws';
 import {useServer} from 'graphql-ws/lib/use/ws';
 
-
 dotenv.config()
-const graphQLSchema = await loadSchema('./graphql/**/*.graphql', {
-    loaders: [new GraphQLFileLoader()]
-})
-const typeDefs = printSchema(graphQLSchema);
 const username = encodeURIComponent(process.env.DATABASE_USERNAME);
 const password = encodeURIComponent(process.env.DATABASE_PASSWORD);
 const clusterUrl = process.env.DATABASE_CLUSTER_URL;
@@ -45,15 +40,20 @@ const uri =
 const client = new MongoClient(uri, {useUnifiedTopology: true});
 await client.connect();
 const db = client.db("Epipresto-dev");
-const vendorsSource = new VendorsSource(db.collection(process.env.DATABASE_VENDORS_COLLECTION))
-const storesSource = new StoresSource(db.collection(process.env.DATABASE_STORES_COLLECTION))
-const productsSource = new ProductsSource(db.collection(process.env.DATABASE_PRODUCTS_COLLECTION))
-const productsVariantsSource = new ProductsVariantsSource(db.collection(process.env.DATABASE_PRODUCTS_VARIANTS_COLLECTION))
-const verificationTokensSource = new VerificationTokensSource(db.collection(process.env.DATABASE_VERIFICATION_TOKENS_COLLECTION))
-const ordersSource = new OrdersSource(db.collection(process.env.DATABASE_ORDERS_COLLECTION))
-const clientsSource = new ClientsSource(db.collection(process.env.DATABASE_CLIENTS_COLLECTION))
-const chatsSource = new ChatsSource(db.collection(process.env.DATABASE_CHATS_COLLECTION))
-const messagesSource = new MessageSource(db.collection(process.env.DATABASE_MESSAGES_COLLECTION))
+export const VENDORS_SOURCE = new VendorsSource(db.collection(process.env.DATABASE_VENDORS_COLLECTION))
+export const STORES_SOURCE = new StoresSource(db.collection(process.env.DATABASE_STORES_COLLECTION))
+export const PRODUCTS_SOURCE = new ProductsSource(db.collection(process.env.DATABASE_PRODUCTS_COLLECTION))
+export const PRODUCTS_VARIANTS_SOURCE = new ProductsVariantsSource(db.collection(process.env.DATABASE_PRODUCTS_VARIANTS_COLLECTION))
+export const VERIFICATION_TOKENS_SOURCE = new VerificationTokensSource(db.collection(process.env.DATABASE_VERIFICATION_TOKENS_COLLECTION))
+export const ORDERS_SOURCE = new OrdersSource(db.collection(process.env.DATABASE_ORDERS_COLLECTION))
+export const CLIENTS_SOURCE = new ClientsSource(db.collection(process.env.DATABASE_CLIENTS_COLLECTION))
+export const CHATS_SOURCE = new ChatsSource(db.collection(process.env.DATABASE_CHATS_COLLECTION))
+export const MESSAGES_SOURCE = new MessageSource(db.collection(process.env.DATABASE_MESSAGES_COLLECTION))
+
+const graphQLSchema = await loadSchema('./graphql/**/*.graphql', {
+    loaders: [new GraphQLFileLoader()]
+})
+const typeDefs = printSchema(graphQLSchema);
 
 const app = express();
 // Our httpServer handles incoming requests to our Express app.
@@ -99,16 +99,15 @@ const serverCleanup = useServer({
         return {
             client,
             dataSources: {
-                vendors: vendorsSource,
-                stores: storesSource,
-                products: productsSource,
-                productsVariants: productsVariantsSource,
-                verificationTokens: verificationTokensSource,
-                orders: ordersSource,
-                clients: clientsSource,
-                chats: chatsSource,
-                messages: messagesSource
-
+                vendors: VENDORS_SOURCE,
+                stores: STORES_SOURCE,
+                products: PRODUCTS_SOURCE,
+                productsVariants: PRODUCTS_VARIANTS_SOURCE,
+                verificationTokens: VERIFICATION_TOKENS_SOURCE,
+                orders: ORDERS_SOURCE,
+                clients: CLIENTS_SOURCE,
+                chats: CHATS_SOURCE,
+                messages: MESSAGES_SOURCE
             },
         }
     },
@@ -130,15 +129,15 @@ app.use(
                 user: req.headers.authorization || '',
                 client,
                 dataSources: {
-                    vendors: vendorsSource,
-                    stores: storesSource,
-                    products: productsSource,
-                    productsVariants: productsVariantsSource,
-                    verificationTokens: verificationTokensSource,
-                    orders: ordersSource,
-                    clients: clientsSource,
-                    chats: chatsSource,
-                    messages: messagesSource
+                    vendors: VENDORS_SOURCE,
+                    stores: STORES_SOURCE,
+                    products: PRODUCTS_SOURCE,
+                    productsVariants: PRODUCTS_VARIANTS_SOURCE,
+                    verificationTokens: VERIFICATION_TOKENS_SOURCE,
+                    orders: ORDERS_SOURCE,
+                    clients: CLIENTS_SOURCE,
+                    chats: CHATS_SOURCE,
+                    messages: MESSAGES_SOURCE
 
                 },
             }

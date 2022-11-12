@@ -19,16 +19,22 @@ const queriesResolvers = {
         ...queriesClientsLoginResolvers,
         ...queriesGettersByIdResolvers,
         ...queriesAnalyticsResolvers,
-        getStripe: async () => {
-            const stripe = stripePackage.Stripe('sk_live_bA0XUdrZQUUlbt0CuN4Y7kQp000wUU5OiN');
+
+        getStripe: async (_, {variantsToOrder}, {dataSources: {productsVariants}}) => {
+
+            const stripe = stripePackage.Stripe('sk_test_Cgu80eDQ7D3Km7WKNIAwfuRp0053siIUft');
             // Use an existing Customer ID if this is a returning customer.
+            const subTotal = await productsVariants.getTotalPriceOfProductVariants(variantsToOrder);
+            const taxs = await productsVariants.getTaxsOfProductVariants(variantsToOrder);
+            const deliveryCost = await productsVariants.getDeliveryCostOfProductVariants(variantsToOrder);
+            const total = subTotal + taxs + deliveryCost * 1.14975;
             const customer = await stripe.customers.create();
             const ephemeralKey = await stripe.ephemeralKeys.create(
                 {customer: customer.id},
                 {apiVersion: '2022-08-01'}
             );
             const paymentIntent = await stripe.paymentIntents.create({
-                amount: 1099,
+                amount: Math.round(total * 10),
                 currency: 'eur',
                 customer: customer.id,
                 automatic_payment_methods: {
@@ -42,7 +48,7 @@ const queriesResolvers = {
                     paymentIntent: paymentIntent.client_secret,
                     ephemeralKey: ephemeralKey.secret,
                     customer: customer.id,
-                    publishableKey: "pk_live_wKUFHBGUKYlaCqEAEaJtuHP000dvnnJ0p6"
+                    publishableKey: "pk_test_EK2EADQF4MqPyfL63ZrKGRiJ00MgduNzlC"
                 }
             }
         }
