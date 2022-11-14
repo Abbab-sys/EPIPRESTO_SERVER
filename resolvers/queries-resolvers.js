@@ -59,32 +59,25 @@ const queriesResolvers = {
       }
       return []
     },
-    searchProducts: async (_, {search, idStore}, {dataSources: {productsVariants}}) => {
+    searchProducts: async (_, {search, first,offset}, {dataSources: {products}}) => {
 
-      let allProductsVariants=  await productsVariants.collection.aggregate([
-        {$lookup:{
-            from:'Products',
-            localField:'relatedProductId',//fildname of a
-            foreignField:'_id',//field name of b
-            as:'relatedProduct' // you can also use id fiels it will replace id with the document
-          }},
-        {$lookup:{
-            from:'Stores',
-            localField:'relatedProduct.relatedStoreId',//fildname of a
-            foreignField:'_id',//field name of b
-            as:'relatedStore' // you can also use id fiels it will replace id with the document
-          }}
-      ]).toArray();
+      let allProducts=  await products.collection.find({}).toArray();
 
-      if (idStore) {
-        allProductsVariants = allProductsVariants.filter((productVariant) => productVariant.relatedProduct.relatedStoreId.toString() === idStore.toString())
-      }
-        const result = allProductsVariants.filter((productVariant) => {
+        const result = allProducts.filter((product) => {
             const regex = new RegExp(search, "gi");
-            return productVariant.name.match(regex) || productVariant.description.match(regex) || productVariant.relatedProduct.name.match(regex) || productVariant.relatedProduct.description.match(regex) || productVariant.relatedStore.name.match(regex) || productVariant.relatedStore.description.match(regex)
+            //check if any words of products tags match the search
+          try {
+            const tagsMatch = product.tags.some((tag) => tag.match(regex));
+            return product.title.match(regex) || product.brand.match(regex) ||tagsMatch
+          }
+          catch (e) {
+            console.log(product)
+            return false
+          }
+
         });
         if (result) {
-            return result
+            return result.slice(offset,offset+first)
         }
         return []
     }
