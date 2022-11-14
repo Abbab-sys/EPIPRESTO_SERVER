@@ -10,14 +10,19 @@ export default class StoresSource extends MongoDataSource {
     return await this.collection.updateOne(query, updateValues);
   }
 
+  async searchStores(searchString) {
+    return await this.collection
+      .find({name : {$regex : searchString}})
+      .toArray();
+  }
   async findOneById(id) {
     id = sanitize(id);
     return await this.collection.findOne({ _id: new ObjectId(id) });
   }
 
   async createNewStore(shopName, shopAddress,shopCategory) {
-    
-    let coordinates = await getCoordinates(shopAddress)       
+
+    let coordinates = await getCoordinates(shopAddress)
 
     //GeoJSON , lng first, lat second
     const locationObject={
@@ -62,7 +67,7 @@ export default class StoresSource extends MongoDataSource {
             }
           ]
         },
-        
+
           {
             day: "FRIDAY",
             activesHours:[
