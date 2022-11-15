@@ -54,5 +54,15 @@ type ProductVariant{
     taxable:Boolean!
     imgSrc:String!
     byWeight:Boolean!
-    stock:Int!
+}
+
+enum ShopCategory{
+    FRUITS_AND_VEGETABLES
+    FISH_AND_SEAFOOD
+    HEALTHY
+    KETO
+    BAKERY
+    WORLD_PRODUCTS
+    BUTCHER
+    OTHER
 }

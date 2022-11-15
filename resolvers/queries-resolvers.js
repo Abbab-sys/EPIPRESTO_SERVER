@@ -59,27 +59,40 @@ const queriesResolvers = {
       }
       return []
     },
-    searchProducts: async (_, {search, first,offset}, {dataSources: {products}}) => {
+    searchProducts: async (_, {search, first, offset}, {dataSources: {products}}) => {
 
-      let allProducts=  await products.collection.find({}).toArray();
+      let allProducts = await products.collection.find({}).toArray();
 
-        const result = allProducts.filter((product) => {
-            const regex = new RegExp(search, "gi");
-            //check if any words of products tags match the search
-          try {
-            const tagsMatch = product.tags.some((tag) => tag.match(regex));
-            return product.title.match(regex) || product.brand.match(regex) ||tagsMatch
-          }
-          catch (e) {
-            console.log(product)
-            return false
-          }
-
-        });
-        if (result) {
-            return result.slice(offset,offset+first)
+      const result = allProducts.filter((product) => {
+        const regex = new RegExp(search, "gi");
+        //check if any words of products tags match the search
+        try {
+          const tagsMatch = product.tags.some((tag) => tag.match(regex));
+          return product.title.match(regex) || product.brand.match(regex) || tagsMatch
+        } catch (e) {
+          console.log(product)
+          return false
         }
-        return []
+
+      });
+      if (result) {
+        return result.slice(offset, offset + first)
+      }
+      return []
+    },
+    getStoresByCategory: async (_, {category}, {dataSources: {stores}}) => {
+      const result = await stores.getStoresByCategory(category);
+      if (result) {
+        return {
+          code: 200,
+          message: "Stores retrieved",
+          stores: result
+        }
+      }
+      return {
+        code: 404,
+        message: "No stores found",
+      }
     }
   },
 };

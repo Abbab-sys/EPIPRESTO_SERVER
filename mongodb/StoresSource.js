@@ -219,4 +219,12 @@ export default class StoresSource extends MongoDataSource {
       })
       .toArray();
   }
+
+  async getStoresByCategory(category) {
+    return await this.collection
+      .find({
+        shopCategory: category,
+      })
+      .toArray();
+  }
 }
