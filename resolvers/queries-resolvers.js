@@ -63,7 +63,7 @@ const queriesResolvers = {
       }
       return []
     },
-    searchProducts: async (_, {search, first, offset}, {dataSources: {products}}) => {
+    searchProducts: async (_, {search}, {dataSources: {products}}) => {
 
       let allProducts = await products.collection.find({}).toArray();
 
@@ -80,7 +80,7 @@ const queriesResolvers = {
 
       });
       if (result) {
-        return result.slice(offset, offset + first)
+        return result
       }
       return []
     },
