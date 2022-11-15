@@ -10,6 +10,7 @@ import {
 } from "./queries-resolvers/queries-clients-credentials-checking-resolvers.js";
 
 import * as stripePackage from "stripe";
+import {getCoordinates} from "../geolocalisation/Geolocalisation.js";
 
 const queriesResolvers = {
   Query: {
@@ -80,8 +81,11 @@ const queriesResolvers = {
       }
       return []
     },
-    getStoresByCategory: async (_, {category}, {dataSources: {stores}}) => {
-      const result = await stores.getStoresByCategory(category);
+    getStoresByCategory: async (_, {category,idClient}, {dataSources: {stores,clients}}) => {
+      const client=await clients.findOneById(idClient);
+      const clientCoordinates = await getCoordinates(client.address);
+      const coordinatesArray= [clientCoordinates.lng, clientCoordinates.lat]
+      const result = await stores.getStoresByCategory(category,coordinatesArray);
       if (result) {
         return {
           code: 200,
