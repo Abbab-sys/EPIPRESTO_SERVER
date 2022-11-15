@@ -8,12 +8,13 @@ type Query{
     isClientUsernameUsed(username:String!):Boolean!
     isClientEmailUsed(email:String!):Boolean!
     getStoreById(idStore:ID!):StoreResponse!
+    getStoresByCategory(category:ShopCategory!,idClient:ID!):StoresResponse!
     getClientAccountById(idClient:ID!):ClientAccountResponse!
     getProductById(idProduct:ID!):ProductResponse!
     getProductVariantById(idVariant:ID!):ProductVariantResponse!
     getOrderById(idOrder:ID!):OrderResponse!
     getAnalytics(idStore:ID!,dateFrom:Date!,dateTo:Date!):AnalyticsResponse!
     getStripe(variantsToOrder:[VariantToOrder!]!):StripeResponse!
-    searchProducts(search:String!,idStore:ID):[ProductVariant!]!
-    searchStores(search:String!):[Store!]!
+    searchProducts(search:String!):[Product!]!
+    searchStores(search:String!,idClient:ID!):[Store!]!
 }

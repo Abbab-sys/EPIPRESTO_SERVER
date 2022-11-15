@@ -10,6 +10,7 @@ import {
 } from "./queries-resolvers/queries-clients-credentials-checking-resolvers.js";
 
 import * as stripePackage from "stripe";
+import {getCoordinates} from "../geolocalisation/Geolocalisation.js";
 
 const queriesResolvers = {
   Query: {
@@ -52,41 +53,53 @@ const queriesResolvers = {
         }
       }
     },
-    searchStores: async (_, {search}, {dataSources: {stores}}) => {
-      const result = await stores.searchStores(search);
+    searchStores: async (_, {search,idClient}, {dataSources: {stores,clients}}) => {
+      const client=await clients.findOneById(idClient);
+      const clientCoordinates = await getCoordinates(client.address);
+      const coordinatesArray= [clientCoordinates.lng, clientCoordinates.lat]
+      const result = await stores.searchStores(search,coordinatesArray);
       if (result) {
         return result
       }
       return []
     },
-    searchProducts: async (_, {search, idStore}, {dataSources: {productsVariants}}) => {
+    searchProducts: async (_, {search}, {dataSources: {products}}) => {
 
-      let allProductsVariants=  await productsVariants.collection.aggregate([
-        {$lookup:{
-            from:'Products',
-            localField:'relatedProductId',//fildname of a
-            foreignField:'_id',//field name of b
-            as:'relatedProduct' // you can also use id fiels it will replace id with the document
-          }},
-        {$lookup:{
-            from:'Stores',
-            localField:'relatedProduct.relatedStoreId',//fildname of a
-            foreignField:'_id',//field name of b
-            as:'relatedStore' // you can also use id fiels it will replace id with the document
-          }}
-      ]).toArray();
+      let allProducts = await products.collection.find({}).toArray();
 
-      if (idStore) {
-        allProductsVariants = allProductsVariants.filter((productVariant) => productVariant.relatedProduct.relatedStoreId.toString() === idStore.toString())
-      }
-        const result = allProductsVariants.filter((productVariant) => {
-            const regex = new RegExp(search, "gi");
-            return productVariant.name.match(regex) || productVariant.description.match(regex) || productVariant.relatedProduct.name.match(regex) || productVariant.relatedProduct.description.match(regex) || productVariant.relatedStore.name.match(regex) || productVariant.relatedStore.description.match(regex)
-        });
-        if (result) {
-            return result
+      const result = allProducts.filter((product) => {
+        const regex = new RegExp(search, "gi");
+        //check if any words of products tags match the search
+        try {
+          const tagsMatch = product.tags.some((tag) => tag.match(regex));
+          return product.title.match(regex) || product.brand.match(regex) || tagsMatch
+        } catch (e) {
+          console.log(product)
+          return false
         }
-        return []
+
+      });
+      if (result) {
+        return result
+      }
+      return []
+    },
+    getStoresByCategory: async (_, {category,idClient}, {dataSources: {stores,clients}}) => {
+      const client=await clients.findOneById(idClient);
+      const clientCoordinates = await getCoordinates(client.address);
+      const coordinatesArray= [clientCoordinates.lng, clientCoordinates.lat]
+      const result = await stores.getStoresByCategory(category,coordinatesArray);
+      if (result) {
+        return {
+          code: 200,
+          message: "Stores retrieved",
+          stores: result
+        }
+      }
+      return {
+        code: 404,
+        message: "No stores found",
+      }
     }
   },
 };

@@ -1,5 +1,5 @@
 import {MongoDataSource} from "apollo-datasource-mongodb";
-import {MongoClient, ObjectId} from "mongodb";
+import {ObjectId} from "mongodb";
 import sanitize from 'mongo-sanitize';
 import {PRODUCTS_SOURCE} from "../index.js";
 
@@ -27,13 +27,8 @@ export default class ProductsVariantsSource extends MongoDataSource {
   }
 
   async getRelatedStoreId(variantId) {
-    this.initProductSource().then(async () => {
-      const relatedProductId = await this.getRelatedProductId(variantId);
-      return await PRODUCTS_SOURCE.getRelatedStoreId(relatedProductId);
-    }).then((result) => {
-      return result;
-    })
-
+    const relatedProductId = await this.getRelatedProductId(variantId);
+    return await PRODUCTS_SOURCE.getRelatedStoreId(relatedProductId);
   }
 
   async getRelatedProductId(variantId) {
@@ -65,8 +60,6 @@ export default class ProductsVariantsSource extends MongoDataSource {
     const query = {relatedProductId: productId};
     return await this.collection.deleteMany(query);
   }
-
-  //getProductVariantByShopifyProductVariantId
 
   async getProductVariantByShopifyId(shopifyProductVariantId) {
     shopifyProductVariantId = sanitize(shopifyProductVariantId);
@@ -102,9 +95,8 @@ export default class ProductsVariantsSource extends MongoDataSource {
   }
 
   async getDeliveryCostOfProductVariants(variantsToOrder) {
-    variantsToOrder = sanitize(variantsToOrder);
-    let totalDeliveryCost = 0;
     const stores = new Set();
+    let totalDeliveryCost = 0;
     for (let i = 0; i < variantsToOrder.length; i++) {
       stores.add(await this.getRelatedStoreId(variantsToOrder[i].variantId))
     }
@@ -128,7 +120,6 @@ export default class ProductsVariantsSource extends MongoDataSource {
     let variant = await this.findOneById(id);
     return variant.price;
   }
-  asyn
 
   async findAllByStoreId(storeId) {
     let allVariants = await this.collection.find({}).toArray();
