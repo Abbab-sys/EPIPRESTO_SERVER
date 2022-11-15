@@ -293,6 +293,8 @@ function mapProduct(product, variants, store) {
     return mappedProduct;
 }
 
+
+
 function mapVariant(variant, parentProductId) {
     const mappedVariant = {
         shopifyVariantId: variant.id.split("/").pop(), //get the last part of the id, WHICH IS THE ID
@@ -304,9 +306,16 @@ function mapVariant(variant, parentProductId) {
         taxable: variant.taxable,
         imgSrc: variant.image ? variant.image.url : "",
         byWeight: false,
-        stock: variant.inventoryQuantity,// TODO: YA DES STOCKS NEGATIFS DANS LE SHOP DE DJALIL
+        stock: validateStock(variant.inventoryQuantity),
     };
 
     return mappedVariant;
 }
 
+function validateStock(stock){
+    if(stock < 0 || stock === null){
+        return 0;
+    }else{
+        return stock;
+    }
+}
