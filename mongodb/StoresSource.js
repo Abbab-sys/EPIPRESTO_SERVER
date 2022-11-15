@@ -10,11 +10,6 @@ export default class StoresSource extends MongoDataSource {
     return await this.collection.updateOne(query, updateValues);
   }
 
-  async searchStores(searchString) {
-    return await this.collection
-        .find({name: {$regex: searchString}})
-        .toArray();
-  }
 
   async findOneById(id) {
     id = sanitize(id);
@@ -235,6 +230,25 @@ export default class StoresSource extends MongoDataSource {
             },
           },
           shopCategory: category
+        })
+        .toArray();
+  }
+
+  async searchStores(searchString,clientCoordinates) {
+    await this.collection.createIndex({location: "2dsphere"});
+    return await this.collection
+        .find({
+          location: {
+            $near: {
+              $geometry: {
+                type: "Point",
+                coordinates: clientCoordinates,
+              },
+              $maxDistance: 15000,
+            },
+          },
+          name: {$regex: searchString}
+
         })
         .toArray();
   }

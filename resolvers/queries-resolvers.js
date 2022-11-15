@@ -53,8 +53,11 @@ const queriesResolvers = {
         }
       }
     },
-    searchStores: async (_, {search}, {dataSources: {stores}}) => {
-      const result = await stores.searchStores(search);
+    searchStores: async (_, {search,idClient}, {dataSources: {stores,clients}}) => {
+      const client=await clients.findOneById(idClient);
+      const clientCoordinates = await getCoordinates(client.address);
+      const coordinatesArray= [clientCoordinates.lng, clientCoordinates.lat]
+      const result = await stores.searchStores(search,coordinatesArray);
       if (result) {
         return result
       }
