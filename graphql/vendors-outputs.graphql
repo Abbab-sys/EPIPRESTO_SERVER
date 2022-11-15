@@ -50,6 +50,7 @@ type ProductVariant{
     variantTitle:String!
     availableForSale:Boolean!
     price:Float!
+    stock:Float!
     sku:String
     taxable:Boolean!
     imgSrc:String!
