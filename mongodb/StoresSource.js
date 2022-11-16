@@ -101,7 +101,7 @@ export default class StoresSource extends MongoDataSource {
           location: locationObject,
           disponibilities: defaultDisponibilities,
           shopCategory: shopCategory,
-          isOpen: true,
+          isPaused: false,
           productsIds: [],
           ADMIN: false,
           orders: [],

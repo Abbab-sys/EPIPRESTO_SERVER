@@ -23,22 +23,40 @@ const outputsResolvers = {
             return mongoProductsObjects.slice(offset, offset + first)
 
         },
+        isOpen: async (mongoStoreObject, _, {dataSources: {stores}}) => {
+            // set isOpen to true if the current time is between the opening and closing hours
+            const currentDay = new Date().getDay()
+            const currentHour = new Date().getHours()
+            const currentMinute = new Date().getMinutes()
+            const currentDayObject = mongoStoreObject.disponibilities.find(disponibility => disponibility.day === currentDay)
+            if (currentDayObject) {
+                const currentHourObject = currentDayObject.activesHours.find(activeHour => {
+                    const openingHour =  activeHour.openingHour.split(":")
+                    const endingHour = activeHour.endingHour.split(":")
+                    return (currentHour > openingHour[0] && currentHour < endingHour[0]) || (currentHour == openingHour[0] && currentMinute >= openingHour[1]) || (currentHour == endingHour[0] && currentMinute <= endingHour[1])
+                })
+                if (currentHourObject) {
+                    return true
+                }
+            }
+            return false
+        },
         orders: async (mongoStoreObject,{idOrder}, {dataSources: {orders, productsVariants, products}}) => {
             if (!mongoStoreObject.ADMIN) {
                 const ordersIds = mongoStoreObject.orders
                 const ordersObjects = await orders.getOrdersByIds(ordersIds)
-                const returnedOrders = [] 
+                const returnedOrders = []
 
                 for (let i = 0; i < ordersObjects.length; i++) {
                     const order = ordersObjects[i]
 
-                    
+
                     if(idOrder && order._id.toString() !== idOrder) continue;
-                    
-              
-            
+
+
+
                     const productsVariantsObjects = await Promise.all(order.productsVariantsOrdered.map( ({relatedProductVariantId}) => {
-                        
+
                         return productsVariants.findOneById(relatedProductVariantId)
                     }))
                     const productsObjects = await Promise.all(productsVariantsObjects.map( ({relatedProductId}) => {

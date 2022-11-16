@@ -12,6 +12,7 @@ type Store{
     address:String!
     relatedVendor:VendorAccount!
     isOpen:Boolean!
+    isPaused:Boolean!
     products(first:Int,offset:Int!,searchText:String):[Product!]!
     disponibilities:[Disponibility!]!
     shopCategory:String

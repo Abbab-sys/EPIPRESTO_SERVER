@@ -21,7 +21,7 @@ input UpdateStore{
     name:String
     address:String
     disponibilities:[DisponibilityInput!]
-    isOpen:Boolean
+    isPaused:Boolean
 }
 input DisponibilityInput{
     day:Day!
