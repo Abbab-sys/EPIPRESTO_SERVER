@@ -25,10 +25,20 @@ const outputsResolvers = {
         },
         isOpen: async (mongoStoreObject, _, {dataSources: {stores}}) => {
             // set isOpen to true if the current time is between the opening and closing hours
+            // create day map to get the current day
+            const dayMap = new Map([
+                [0, "SUNDAY"],
+                [1, "MONDAY"],
+                [2, "TUESDAY"],
+                [3, "WEDNESDAY"],
+                [4, "THURSDAY"],
+                [5, "FRIDAY"],
+                [6, "SATURDAY"]
+            ])
             const currentDay = new Date().getDay()
             const currentHour = new Date().getHours()
             const currentMinute = new Date().getMinutes()
-            const currentDayObject = mongoStoreObject.disponibilities.find(disponibility => disponibility.day === currentDay)
+            const currentDayObject = mongoStoreObject.disponibilities.find(disponibility => disponibility.day === dayMap.get(currentDay))
             if (currentDayObject) {
                 const currentHourObject = currentDayObject.activesHours.find(activeHour => {
                     const openingHour =  activeHour.openingHour.split(":")
