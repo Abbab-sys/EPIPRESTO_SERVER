@@ -62,7 +62,7 @@ const mutationsOrdersResolvers = {
         }
 
         const {insertedId} = await orders.collection.insertOne(newOrder);
-        const order = await orders.findOneById(insertedId);
+        let order = await orders.findOneById(insertedId);
         const ORDERS_COUNT=await orders.getOrdersCount() + 1
         orders.collection.updateOne({_id: new ObjectId(order._id)}, {$set: {paymentMethod,orderNumber: "EP" + ORDERS_COUNT.toString()}})
         await orders.incrementOrdersCount();
@@ -82,7 +82,8 @@ const mutationsOrdersResolvers = {
             await stores.collection.updateOne(queryVendor, {$push: {chats: chatId}})
             await clients.collection.updateOne(queryClient, {$push: {chats: chatId}})
         }
-        return {code: 200, message: "Order submitted"};
+        order = await orders.findOneById(insertedId);
+        return {code: 200, message: "Order submitted",order:order};
     },
     updateOrderStatus: async (parent, {orderId, newStatus}, {dataSources: {orders}}) => {
         const orderQuery = {_id: new ObjectId(orderId)};
