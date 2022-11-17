@@ -89,14 +89,13 @@ export async function createProduct(
   if (extisingProduct) {
     return;
   } else {
-    console.log("Received Created Product from Shopify", shopifyProduct);
 
     //map the product
     const mappedProduct = {
       shopifyProductId: shopifyProduct.id.toString(),
       title: shopifyProduct.title,
       vendor: store.name,
-      tags: shopifyProduct.tags,
+      tags: validateTags(shopifyProduct.tags),
       imgSrc: shopifyProduct.image ? shopifyProduct.image.src : "",
       relatedStoreId: store._id,
       brand: "",
@@ -124,19 +123,16 @@ export async function createProduct(
         taxable: variant.taxable,
         imgSrc: variant.image ? variant.image.src : mappedProduct.imgSrc,
         byWeight: false,
-        stock: variant.inventory_quantity, 
+        stock: validateStock(variant.inventory_quantity), 
       };
-
-      console.log("Variant created in our database", mappedVariant);
 
       const createdVariantId = await productsVariantsSource.createProductVariant(mappedVariant);
 
-      console.log("created variant insertedID", createdVariantId);
-      await productsSource.addNewVariantToProduct(createdProductId,createdVariantId);
+      const addedVariant = await productsSource.addNewVariantToProduct(createdProductId,createdVariantId);
+
 
     });
 
-    console.log("Product created in our database", mappedProduct);
     await storesSource.updateStoreById(store._id, {
       lastShopifySyncDate: new Date().toISOString().slice(0, 19),
   });
@@ -144,3 +140,20 @@ export async function createProduct(
 
   return "create Product called successfully";
 }
+
+function validateStock(stock){
+  if(stock < 0 || stock === null){
+      return 0;
+  }else{
+      return stock;
+  }
+}
+
+function validateTags(tags){
+  if(tags === null || tags === ""){
+      return [];
+  }else{
+      return tags;
+  }
+}
+
