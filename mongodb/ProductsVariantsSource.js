@@ -1,6 +1,9 @@
 import {MongoDataSource} from "apollo-datasource-mongodb";
 import {ObjectId} from "mongodb";
 import sanitize from 'mongo-sanitize';
+import {MongoClient} from "mongodb";
+import ProductsSource from "../mongodb/ProductsSource.js";
+
 // import {PRODUCTS_SOURCE} from "../index.js";
 
 export default class ProductsVariantsSource extends MongoDataSource {
