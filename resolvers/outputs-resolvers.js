@@ -111,9 +111,18 @@ const outputsResolvers = {
             const relatedStoreId = mongoProductObject.relatedStoreId
             return await stores.findOneById(relatedStoreId)
         },
-        variants: async (mongoProductObject, _, {dataSources: {productsVariants}}) => {
+        variants: async (mongoProductObject,  {first, offset, searchText} , {dataSources: {productsVariants}}) => {
             const productsVariantsIds = mongoProductObject.variantsIds
-            return await productsVariants.getProductsVariantsByIds(productsVariantsIds)
+            const allVariants = await productsVariants.getProductsVariantsByIds(productsVariantsIds)
+            // for each variant create a display name
+            allVariants.forEach(variant => {
+                variant.displayName = `${mongoProductObject.title} - ${variant.variantTitle}`
+            })
+            if (searchText) {
+                const filteredVariants = allVariants.filter(variant => variant.displayName.toLowerCase().includes(searchText.toLowerCase()))
+                return filteredVariants.slice(offset, offset + first)
+            }
+            return allVariants
         },
     },
     ProductVariant: {
