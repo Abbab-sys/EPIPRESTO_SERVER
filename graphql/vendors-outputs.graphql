@@ -41,7 +41,7 @@ type Product{
     published:Boolean!
     tags:[String!]!
     imgSrc:String!
-    variants:[ProductVariant!]!
+    variants(first:Int,offset:Int!,searchText:String):[ProductVariant!]!
 }
 type ProductVariant{
     _id:ID!

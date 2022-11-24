@@ -76,7 +76,7 @@ const mutationsOrdersResolvers = {
                 relatedOrderId: order._id,
                 relatedVendorId: new ObjectId(vendorId),
                 relatedClientId: new ObjectId(clientId),
-                messages: []
+                messagesIds: []
             })
             await orders.collection.updateOne({_id: order._id}, {$push: {chatsIds: chatId}})
             await stores.collection.updateOne(queryVendor, {$push: {chats: chatId}})

@@ -63,7 +63,7 @@ const httpServer = http.createServer(app);
 const schema = makeExecutableSchema({typeDefs, resolvers});
 const server = new ApolloServer({
     schema,
-    csrfPrevention: true,
+    csrfPrevention: false,
     cache: 'bounded',
     introspection: true,
     plugins: [
@@ -119,7 +119,7 @@ await server.start()
 // and our expressMiddleware function.
 app.use(
     '/',
-    cors(),
+    cors({ origin: ['*'] }),
     bodyParser.json(),
     // expressMiddleware accepts the same arguments:
     // an Apollo Server instance and optional configuration options
