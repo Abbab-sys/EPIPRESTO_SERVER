@@ -87,14 +87,13 @@ export async function updateProduct(
 
   //We verify that the product to updated has the same store Id as the store that triggered the webhook
   if (product && product.relatedStoreId.toString() === store._id.toString()) {
-    console.log("product found in db, updating it");
 
     //TODO: DESCRIPTION
     const updatedProduct = {
       shopifyProductId: shopifyProductId,
       title: shopifyProduct.title,
       vendor: shopifyProduct.vendor,
-      tags: shopifyProduct.tags,
+      tags: validateTags(shopifyProduct.tags),
       imgSrc: shopifyProduct.image
         ? shopifyProduct.image.src
         : shopifyProduct.images[0].src,
@@ -113,13 +112,14 @@ export async function updateProduct(
         return {
           shopifyProductVariantId: variant.id.toString(),
           relatedProductId: product._id,
-          displayName: variant.title,
+          variantTitle: variant.title,
           availableForSale: variant.inventory_quantity > 0,
           price: variant.price,
           sku: variant.sku ? variant.sku : "",
           taxable: variant.taxable,
           byWeight: variant.weight !== 0,
-          stock: variant.inventory_quantity,
+          imgSrc: variantImages(variant.image_id,shopifyProduct.images),
+          stock: validateStock(variant.inventory_quantity),
         };
       });
 
@@ -141,9 +141,9 @@ export async function updateProduct(
           const newVariant = await productsVariantsSource.createProductVariant(
             variant
           );
-
           //update product variantsIds
-          updatedProduct.variantsIds.push(newVariant.insertedId);
+          updatedProduct.variantsIds.push(newVariant);
+
         }
       }
     }
@@ -159,4 +159,31 @@ export async function updateProduct(
 
 
   return "updateProduct called successfully";
+}
+function validateStock(stock){
+  if(stock < 0 || stock === null){
+      return 0;
+  }else{
+      return stock;
+  }
+}
+
+function validateTags(tags){
+  if(tags === null || tags === ""){
+      return [];
+  }else{
+      return tags;
+  }
+}
+
+function variantImages(imageId,images){
+  // in the images array , find the src of the image with the same id as the imageId
+  const image = images.find(image => image.id === imageId);
+
+  if (image){
+      return image.src;
+  } else {
+    return ""
+}
+  
 }

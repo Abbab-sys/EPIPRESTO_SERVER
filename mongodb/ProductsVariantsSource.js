@@ -1,9 +1,29 @@
 import {MongoDataSource} from "apollo-datasource-mongodb";
 import {ObjectId} from "mongodb";
 import sanitize from 'mongo-sanitize';
-import {PRODUCTS_SOURCE} from "../index.js";
+import {MongoClient} from "mongodb";
+import ProductsSource from "../mongodb/ProductsSource.js";
+
+// import {PRODUCTS_SOURCE} from "../index.js";
 
 export default class ProductsVariantsSource extends MongoDataSource {
+
+  productsSource =null
+
+  async initProductSource() {
+      const username = encodeURIComponent(process.env.DATABASE_USERNAME);
+      const password = encodeURIComponent(process.env.DATABASE_PASSWORD);
+      const clusterUrl = process.env.DATABASE_CLUSTER_URL;
+      const authMechanism = process.env.DATABASE_AUTH_MECHANISM;
+
+      const uri =
+          `mongodb+srv://${username}:${password}@${clusterUrl}/?authMechanism=${authMechanism}`;
+      const client = new MongoClient(uri, {useUnifiedTopology: true});
+      await client.connect();
+      const db = client.db("Epipresto-dev");
+      this.productsSource = new ProductsSource(db.collection(process.env.DATABASE_PRODUCTS_COLLECTION))
+      console.log("products source initialized")
+  }
 
 
   async findOneById(id) {
@@ -26,9 +46,18 @@ export default class ProductsVariantsSource extends MongoDataSource {
     }).toArray();
   }
 
+  // async getRelatedStoreId(variantId) {
+  //   const relatedProductId = await this.getRelatedProductId(variantId);
+  //   return await PRODUCTS_SOURCE.getRelatedStoreId(relatedProductId);
+  // }
+
   async getRelatedStoreId(variantId) {
-    const relatedProductId = await this.getRelatedProductId(variantId);
-    return await PRODUCTS_SOURCE.getRelatedStoreId(relatedProductId);
+    this.initProductSource().then(async () => {
+        const relatedProductId = await this.getRelatedProductId(variantId);
+        return await this.productsSource.getRelatedStoreId(relatedProductId);
+    }).then((result) => {
+        return result;
+    })
   }
 
   async getRelatedProductId(variantId) {

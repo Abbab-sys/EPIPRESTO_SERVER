@@ -244,6 +244,7 @@ export async function getAllProducts(
                 }
             });
 
+
             //For each product in the hashmap, map it into our product object and save it in mongodb
             productsWithVariants.forEach(async (variants, productId) => {
                 const product = products.find((product) => product.id === productId);
@@ -265,7 +266,7 @@ export async function getAllProducts(
                         mappedVariant
                     );
                     //push newVariant.insertedId to the variantsIds array of the product
-                    await productsSource.addNewVariantToProduct(productId, newVariant.insertedId);
+                    const addedVariant=await productsSource.addNewVariantToProduct(productId, newVariant);
                 });
             });
         });
@@ -282,7 +283,7 @@ function mapProduct(product, variants, store) {
         shopifyProductId: product.id.split("/").pop(), //get the last part of the id, WHICH IS THE ID
         title: product.title,
         vendor: store.name,
-        tags: product.tags,
+        tags: validateTags(product.tags),
         description: product.description,
         imgSrc: product.featuredImage ? product.featuredImage.url : "",
         relatedStoreId: store._id,
@@ -317,5 +318,13 @@ function validateStock(stock){
         return 0;
     }else{
         return stock;
+    }
+}
+
+function validateTags(tags){
+    if(tags === null || tags === ""){
+        return [];
+    }else{
+        return tags;
     }
 }
