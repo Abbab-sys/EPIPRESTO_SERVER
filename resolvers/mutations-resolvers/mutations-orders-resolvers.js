@@ -58,8 +58,21 @@ const mutationsOrdersResolvers = {
             relatedVendorsIds: Array.from(vendorsIds),
             relatedClientId: new ObjectId(clientId),
             logs: [{status: "WAITING_CONFIRMATION", time: new Date().toUTCString()}],
-            chatsIds:[]
+            chatsIds:[],
+            subOrdersStatus: [],
         }
+
+
+        //for each store in the order, add to newOrder.subOrdersLogs a new subOrderLog with the idStore and the status WAITING_CONFIRMATION
+        for(const vendorId of newOrder.relatedVendorsIds){            
+            newOrder.subOrdersStatus.push({
+                idStore: vendorId,
+                status: "WAITING_CONFIRMATION",
+                time: new Date().toUTCString()
+            })
+        }
+
+        
 
         const {insertedId} = await orders.collection.insertOne(newOrder);
         let order = await orders.findOneById(insertedId);
@@ -85,10 +98,29 @@ const mutationsOrdersResolvers = {
         order = await orders.findOneById(insertedId);
         return {code: 200, message: "Order submitted",order:order};
     },
-    updateOrderStatus: async (parent, {orderId, newStatus}, {dataSources: {orders}}) => {
+
+    updateOrderStatus: async (parent, {storeId,orderId, newStatus}, {dataSources: {orders,stores}}) => {
         const orderQuery = {_id: new ObjectId(orderId)};
-        const newLog = {status: newStatus, time: new Date().toUTCString()};
-        const {matchedCount} = await orders.collection.updateOne(orderQuery, {$push: {logs: newLog}})
+        const subOrderQuery = {_id: new ObjectId(orderId), "subOrdersStatus.idStore": new ObjectId(storeId)};
+
+        const store = await stores.collection.findOne({_id: new ObjectId(storeId)})
+
+        let matchedCount = null;
+
+        if(store.ADMIN === true){
+
+            const newLog = {status: newStatus, time: new Date().toUTCString()};
+            matchedCount= await orders.collection.updateOne(orderQuery, {$push: {logs: newLog}})
+        }
+        else{
+            const newSubOrderLog = {idStore:new ObjectId(storeId),status: newStatus, time: new Date().toUTCString()};
+
+            matchedCount= await orders.collection.updateOne(subOrderQuery, {$set: {
+                "subOrdersStatus.$.status": newStatus,
+                "subOrdersStatus.$.time": new Date().toUTCString()
+            }})
+        }
+
         if (!matchedCount) {
             return {code: 406, message: "Order not found"};
         }
