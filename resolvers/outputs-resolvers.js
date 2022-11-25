@@ -52,10 +52,11 @@ const outputsResolvers = {
             return false
         },
         orders: async (mongoStoreObject,{idOrder}, {dataSources: {orders, productsVariants, products}}) => {
+            const returnedOrders = []
+
             if (!mongoStoreObject.ADMIN) {
                 const ordersIds = mongoStoreObject.orders
                 const ordersObjects = await orders.getOrdersByIds(ordersIds)
-                const returnedOrders = []
 
                 for (let i = 0; i < ordersObjects.length; i++) {
                     const order = ordersObjects[i]
@@ -82,10 +83,20 @@ const outputsResolvers = {
 
                     ordersObjects[i] = order
                     returnedOrders.push(order)
+
                 }
 
                 return returnedOrders;
             }
+
+            const ordersObjects = await orders.getAllOrders()
+
+            if(idOrder) {
+                const order = ordersObjects.find(order => order._id.toString() === idOrder)
+                if(!order) return []
+                return [order]
+            }
+            
             return await orders.getAllOrders()
 
         },
@@ -104,6 +115,9 @@ const outputsResolvers = {
                 return mongoStoreObject.disponibilities
             }
             return []
+        },
+        isAdmin: async (mongoStoreObject, _) => {
+            return mongoStoreObject.ADMIN
         }
     },
     Product: {
@@ -173,6 +187,20 @@ const outputsResolvers = {
             }
             return taxs
         },
+        subOrdersStatus: async ({subOrdersStatus}, _, {dataSources: {stores}}) => {
+
+            // for each subOrderStatus, get the store and return the store Id with the name and the status and time
+            const subOrdersStatusOfStore = []
+            for (const subOrderStatus of subOrdersStatus) {
+                const store = await stores.findOneById(subOrderStatus.idStore)
+                subOrdersStatusOfStore.push({
+                    relatedStore: store,
+                    status: subOrderStatus.status,
+                    time: subOrderStatus.time
+                })
+            }
+            return subOrdersStatusOfStore
+        }
     },
     ProductVariantOrdered: {
         relatedProductVariant: async ({relatedProductVariantId}, _, {dataSources: {productsVariants}}) => {

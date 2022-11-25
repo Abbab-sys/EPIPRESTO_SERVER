@@ -18,6 +18,7 @@ type Store{
     shopCategory:String
     orders(idOrder:ID):[Order!]!
     chats:[Chat!]!
+    isAdmin:Boolean
 }
 
 type Disponibility{
