@@ -25,7 +25,7 @@ type Mutation{
     removeProductById(productId:ID!):HttpResponse!
 
     submitOrder(clientId:ID!,productsVariantsToOrder:[ProductOrderedInput!]!,paymentMethod:PaymentMethod!):OrderResponse!
-    updateOrderStatus(orderId:ID!,newStatus:OrderStatus!):HttpResponse!
+    updateOrderStatus(storeId:ID!,orderId:ID!,newStatus:OrderStatus!):HttpResponse!
 
     sendMessageToChat(message:MessageInput!):HttpResponse!
 }

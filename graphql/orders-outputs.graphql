@@ -6,6 +6,7 @@ type Order{
     relatedClient:ClientAccount!
     relatedChats:[Chat!]!
     logs:[OrderLog!]!
+    subOrdersStatus:[SubOrdersLog!]!
     subTotal:Float!
     deliveryFee:Float!
     taxs:Float!
@@ -15,6 +16,14 @@ type OrderLog{
     status:OrderStatus
     time:Date
 }
+
+type SubOrdersLog{
+    # idStore:ID!
+    relatedStore:Store!
+    status:OrderStatus!
+    time:Date
+}
+
 enum PaymentMethod{
     CASH
     MASTER_CARD
@@ -33,6 +42,8 @@ enum OrderStatus{
     DELIVERED,
     CLOSED
 }
+
+
 type ProductVariantOrdered{
     relatedProductVariant:ProductVariant!
     quantity:Int!
