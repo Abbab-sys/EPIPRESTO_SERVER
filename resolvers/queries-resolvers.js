@@ -36,7 +36,7 @@ const queriesResolvers = {
       );
       const paymentIntent = await stripe.paymentIntents.create({
         amount: Math.round(total * 10),
-        currency: 'eur',
+        currency: 'cad',
         customer: customer.id,
         automatic_payment_methods: {
           enabled: true,
