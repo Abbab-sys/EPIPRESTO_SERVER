@@ -119,7 +119,7 @@ await server.start()
 // and our expressMiddleware function.
 app.use(
     '/',
-    cors({ origin: ['*'] }),
+    cors({ origin: '*' }),
     bodyParser.json(),
     // expressMiddleware accepts the same arguments:
     // an Apollo Server instance and optional configuration options
