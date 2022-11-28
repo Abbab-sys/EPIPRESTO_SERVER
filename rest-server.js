@@ -8,7 +8,7 @@ import {createProduct} from "./sync/shopify/createProduct.js";
 dotenv.config();
 
 const app = express();
-const port = 3000;
+const port = 3001;
 const username = encodeURIComponent(process.env.DATABASE_USERNAME);
 const password = encodeURIComponent(process.env.DATABASE_PASSWORD);
 const clusterUrl = process.env.DATABASE_CLUSTER_URL;
