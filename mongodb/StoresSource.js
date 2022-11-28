@@ -212,6 +212,7 @@ export default class StoresSource extends MongoDataSource {
               $maxDistance: distance,
             },
           },
+          ADMIN: false
         })
         .toArray();
   }
@@ -229,7 +230,8 @@ export default class StoresSource extends MongoDataSource {
               $maxDistance: 15000,
             },
           },
-          shopCategory: category
+          shopCategory: category,
+          ADMIN: false
         })
         .toArray();
   }
@@ -247,7 +249,8 @@ export default class StoresSource extends MongoDataSource {
               $maxDistance: 15000,
             },
           },
-          name: {$regex: searchString}
+          name: {$regex: searchString},
+          ADMIN: false
 
         })
         .toArray();
