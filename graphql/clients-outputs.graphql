@@ -9,5 +9,5 @@ type ClientAccount{
     username:String!
     orders:[Order!]!
     chats:[Chat!]!
-    nearbyShops(distance:Int!):[Store!]!
+    nearbyShops(distance:Float!):[Store!]!
 }
