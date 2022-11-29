@@ -35,9 +35,10 @@ const outputsResolvers = {
                 [5, "FRIDAY"],
                 [6, "SATURDAY"]
             ])
-            const currentDay = new Date().getDay()
-            const currentHour = new Date().getHours()
-            const currentMinute = new Date().getMinutes()
+            const montrealTime = new Date().toLocaleString("en-US", {timeZone: "America/Montreal"})
+            const currentDay = new Date(montrealTime).getDay()
+            const currentHour = new Date(montrealTime).getHours()
+            const currentMinute = new Date(montrealTime).getMinutes()
             const currentDayObject = mongoStoreObject.disponibilities.find(disponibility => disponibility.day === dayMap.get(currentDay))
             if (currentDayObject) {
                 const currentHourObject = currentDayObject.activesHours.find(activeHour => {
