@@ -10,7 +10,7 @@ async function sendEmail(email, htmlPath, htmlReplacements, subject) {
     source = source.replace(htmlReplacements[i], htmlReplacements[i + 1]);
   }
   const transporter = nodemailer.createTransport({
-    service: "Outlook365",
+    service: "gmail",
     auth: {
       user: process.env.EPIPRESTO_MAIL,
       pass: process.env.EPIPRESTO_MAIL_PASSWORD
