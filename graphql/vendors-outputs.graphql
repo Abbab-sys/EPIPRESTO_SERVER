@@ -13,7 +13,7 @@ type Store{
     relatedVendor:VendorAccount!
     isOpen:Boolean!
     isPaused:Boolean!
-    products(first:Int,offset:Int!,searchText:String):[Product!]!
+    products(first:Int!,offset:Int!,searchText:String,filterAvailable:Boolean):[Product!]!
     disponibilities:[Disponibility!]!
     shopCategory:String
     orders(idOrder:ID):[Order!]!
@@ -42,7 +42,7 @@ type Product{
     published:Boolean!
     tags:[String!]!
     imgSrc:String!
-    variants(first:Int,offset:Int!,searchText:String):[ProductVariant!]!
+    variants(first:Int,offset:Int!,searchText:String,,filterAvailable:Boolean):[ProductVariant!]!
 }
 type ProductVariant{
     _id:ID!
