@@ -33,11 +33,11 @@ async function sendEmail(email, htmlPath, htmlReplacements, subject) {
 
 async function sendConfirmationEmail(email, token) {
   const linkToClick = process.env.WEB_APP_URL + `/verify/${token}`;
-  await sendEmail(email, './htmls/AccountVerified.html', ["<LINK_TO_CLICK>", linkToClick], 'Confirmation de votre é-mail/ E-mail validation');
+  await sendEmail(email, './htmls/AccountVerified.html', ['"<LINK_TO_CLICK>"', linkToClick], 'Confirmation de votre é-mail/ E-mail validation');
 }
 
 async function sendUpdateStatusEmail(email, orderNumber, newStatus) {
-  await sendEmail(email, './htmls/UpdateOrderStatus.html', ["<NEW_STATUS>", newStatus, "<ORDER_NUMBER>", orderNumber], 'Votre commande a été mise à jour/ Your order has been updated');
+  await sendEmail(email, './htmls/UpdateOrderStatus.html', ['<NEW_STATUS>"', newStatus, '"<ORDER_NUMBER>"', orderNumber], 'Votre commande a été mise à jour/ Your order has been updated');
 }
 
 export {sendConfirmationEmail, sendUpdateStatusEmail}
