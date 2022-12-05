@@ -88,7 +88,6 @@ export async function updateProduct(
   //We verify that the product to updated has the same store Id as the store that triggered the webhook
   if (product && product.relatedStoreId.toString() === store._id.toString()) {
 
-    //TODO: DESCRIPTION
     const updatedProduct = {
       shopifyProductId: shopifyProductId,
       title: shopifyProduct.title,
@@ -130,14 +129,13 @@ export async function updateProduct(
             variant.shopifyProductVariantId
           );
 
+          //If variant exists, we update it, else we create it
         if (productVariant) {
-          console.log("productVariant found, updating it");
           await productsVariantsSource.updateProductVariantById(
             productVariant._id,
             variant
           );
         } else {
-          console.log("productVariant not found, creating it ",variant);
           const newVariant = await productsVariantsSource.createProductVariant(
             variant
           );

@@ -1,5 +1,7 @@
 import { GraphQLClient, gql } from "graphql-request";
 
+
+//This function is used to test the credentials of a shopify store to see if they are valid, its only called once from the web module.
 export async function testShopifyRequest(
     shopifyShopDomain,
     shopifyToken

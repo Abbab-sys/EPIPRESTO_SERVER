@@ -2,6 +2,7 @@ import {MongoDataSource} from "apollo-datasource-mongodb";
 import {ObjectId} from "mongodb";
 import sanitize from 'mongo-sanitize';
 
+//This Class contains all the methods to interact with the database for the Chat collection 
 export default class ChatsSource extends MongoDataSource {
     async findOneById(id,options) {
         id=sanitize(id);

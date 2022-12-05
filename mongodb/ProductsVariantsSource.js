@@ -4,8 +4,7 @@ import sanitize from 'mongo-sanitize';
 import {MongoClient} from "mongodb";
 import ProductsSource from "../mongodb/ProductsSource.js";
 
-// import {PRODUCTS_SOURCE} from "../index.js";
-
+//This Class contains all the methods to interact with the database for the ProductsVariants collection
 export default class ProductsVariantsSource extends MongoDataSource {
 
   productsSource =null
@@ -22,7 +21,6 @@ export default class ProductsVariantsSource extends MongoDataSource {
       await client.connect();
       const db = client.db("Epipresto-dev");
       this.productsSource = new ProductsSource(db.collection(process.env.DATABASE_PRODUCTS_COLLECTION))
-      console.log("products source initialized")
   }
 
 
@@ -46,10 +44,6 @@ export default class ProductsVariantsSource extends MongoDataSource {
     }).toArray();
   }
 
-  // async getRelatedStoreId(variantId) {
-  //   const relatedProductId = await this.getRelatedProductId(variantId);
-  //   return await PRODUCTS_SOURCE.getRelatedStoreId(relatedProductId);
-  // }
 
   async getRelatedStoreId(variantId) {
     this.initProductSource().then(async () => {

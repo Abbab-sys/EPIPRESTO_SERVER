@@ -18,7 +18,6 @@ type OrderLog{
 }
 
 type SubOrdersLog{
-    # idStore:ID!
     relatedStore:Store!
     status:OrderStatus!
     time:Date
@@ -61,7 +60,7 @@ enum MessageStatus{
     SENT
     RECEIVED
     READ
-} # TODO add resolvers for this
+}
 enum Role{
     ADMIN
     CLIENT

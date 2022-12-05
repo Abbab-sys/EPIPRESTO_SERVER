@@ -3,6 +3,7 @@ import {ObjectId} from "mongodb";
 import sanitize from "mongo-sanitize";
 import {getCoordinates} from "../geolocalisation/Geolocalisation.js";
 
+//This Class contains all the methods to interact with the database for the Stores collection
 export default class StoresSource extends MongoDataSource {
   async updateOne(storeId, updateValues) {
     storeId = sanitize(storeId);
@@ -18,9 +19,10 @@ export default class StoresSource extends MongoDataSource {
 
   async createNewStore(shopName, shopAddress, shopCategory) {
 
+    //get coordinates from address on store creation
     let coordinates = await getCoordinates(shopAddress)
 
-    //GeoJSON , lng first, lat second
+    //GeoJSON , lng first, lat second ==> check MongoDB documentation for more info
     const locationObject = {
       type: "Point",
       coordinates: [parseFloat(coordinates.lng), parseFloat(coordinates.lat)]
@@ -156,7 +158,7 @@ export default class StoresSource extends MongoDataSource {
   async findStoresToSynchronize() {
     return await this.collection
         .find({
-          apiType: {$in: ["SHOPIFY", "WOOCOMMERCE"]}, // TODO add this to a global const
+          apiType: {$in: ["SHOPIFY", "WOOCOMMERCE"]},
         })
         .toArray();
   }
@@ -188,7 +190,6 @@ export default class StoresSource extends MongoDataSource {
         .toArray();
   }
 
-  //get store by id
   async getStoreById(storeId) {
     return await this.collection.findOne({_id: new ObjectId(storeId)});
   }

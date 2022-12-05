@@ -2,7 +2,7 @@ import { Client } from "@googlemaps/google-maps-services-js";
 
 const client = new Client({});
 
-//TODO: Address should be separated in street, city, country, etc.
+//This method calls the Google Maps API to get the coordinates of the address specified in the parameter
 async function getCoordinates(address) {
   
     let {lat,lng} = await client
@@ -18,7 +18,7 @@ async function getCoordinates(address) {
         return {lat, lng}
     })
     .catch((e) => {
-      console.log("Error while fetching coordinates", e);
+      return null;
     });
 
     return {lat, lng};

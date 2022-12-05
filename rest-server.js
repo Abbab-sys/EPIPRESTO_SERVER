@@ -31,7 +31,6 @@ app.use(express.json());
 app.post("/webhooks/shopify/get-all-products/:id", async (req, res) => {
   const store_id = req.params.id;
 
-  console.log("First time sync webhook received from store : ", store_id);
 
   const { admin_graphql_api_id, status } = req.body;
 
@@ -61,7 +60,6 @@ app.post("/webhooks/shopify/get-all-products/:id", async (req, res) => {
     @return 200 HTTP code
  */
 app.post("/webhooks/shopify/update-product/:id", async (req, res) => {
-  console.log("webhook update product");
   const store_id = req.params.id;
   const storesSource = new StoresSource(
     client.db("Epipresto-dev").collection("Stores")
@@ -81,20 +79,15 @@ app.post("/webhooks/shopify/update-product/:id", async (req, res) => {
   res.status(200).send("OK");
 });
 
-//TODO: Webhook pour delete un produit d'un store
-app.post("/webhooks/shopify/delete-product/:id", async (req, res) => {
-  res.status(200).send("OK");
-});
-
 /**
  *
  *  Endpoint to create a product from shopify (Only called by Shopify webhook) when a product has been created
  *  @param {any} req: the request
   * @param {any} res: the response
     @return 200 HTTP code
- */app.post("/webhooks/shopify/create-product/:id", async (req, res) => {
+ */
+app.post("/webhooks/shopify/create-product/:id", async (req, res) => {
 
-  console.log("webhook create product");
   const store_id = req.params.id;
   const storesSource = new StoresSource(
     client.db("Epipresto-dev").collection("Stores")

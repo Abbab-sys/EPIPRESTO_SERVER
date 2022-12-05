@@ -116,7 +116,6 @@ async function subscribeToWebhook(shopifyShopDomain, shopifyToken, store_id_stri
     });
 
 
-    //TODO: CHANGE CALLBACK URL
     const webhookMutation = gql`
         mutation {
             webhookSubscriptionCreate(
@@ -139,7 +138,6 @@ async function subscribeToWebhook(shopifyShopDomain, shopifyToken, store_id_stri
 
     const data = await graphQLClient.request(webhookMutation);
 
-    console.log("webhook subscription created", data);
 
 
     return data;
