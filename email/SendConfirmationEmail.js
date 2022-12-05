@@ -37,7 +37,7 @@ async function sendConfirmationEmail(email, token) {
 }
 
 async function sendUpdateStatusEmail(email, orderNumber, newStatus) {
-  await sendEmail(email, './htmls/UpdateOrderStatus.html', ['<NEW_STATUS>"', newStatus, '"<ORDER_NUMBER>"', orderNumber], 'Votre commande a été mise à jour/ Your order has been updated');
+  await sendEmail(email, './htmls/UpdateOrderStatus.html', ['<NEW_STATUS>', newStatus, '"<ORDER_NUMBER>"', orderNumber], 'Votre commande a été mise à jour/ Your order has been updated');
 }
 
 export {sendConfirmationEmail, sendUpdateStatusEmail}
