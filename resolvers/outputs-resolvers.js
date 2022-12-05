@@ -1,6 +1,19 @@
 import { getCoordinates } from "../geolocalisation/Geolocalisation.js";
 
 const outputsResolvers = {
+    AccountResponse: {
+        __resolveType(obj){
+            // Only Author has a name field
+            if(obj.vendorAccount){
+                return 'VendorAccountResponse';
+            }
+            // Only Book has a title field
+            if(obj.clientAccount){
+                return 'ClientAccountResponse';
+            }
+            return null; // GraphQLError is thrown
+        },
+    },
     VendorAccount: {
         store: async (parent, _, {dataSources: {stores}}) => {
             return await stores.findOneById(parent.storeId)
@@ -97,7 +110,7 @@ const outputsResolvers = {
                 if(!order) return []
                 return [order]
             }
-            
+
             return await orders.getAllOrders()
 
         },
