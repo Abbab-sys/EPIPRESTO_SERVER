@@ -14,7 +14,7 @@ type Query{
     getProductVariantById(idVariant:ID!):ProductVariantResponse!
     getOrderById(idOrder:ID!):OrderResponse!
     getAnalytics(idStore:ID!,dateFrom:Date!,dateTo:Date!):AnalyticsResponse!
-    getStripe(variantsToOrder:[VariantToOrder!]!):StripeResponse!
+    getStripe(idClient:ID,variantsToOrder:[VariantToOrder!]!):StripeResponse!
     searchProducts(search:String!):[Product!]!
     searchStores(search:String!,idClient:ID!):[Store!]!
 }

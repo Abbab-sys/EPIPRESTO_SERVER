@@ -21,7 +21,7 @@ const queriesResolvers = {
     ...queriesGettersByIdResolvers,
     ...queriesAnalyticsResolvers,
 
-    getStripe: async (_, {variantsToOrder}, {dataSources: {productsVariants}}) => {
+    getStripe: async (_, {idClient, variantsToOrder}, {dataSources: {productsVariants, clients}}) => {
 
       const stripe = stripePackage.Stripe('sk_test_Cgu80eDQ7D3Km7WKNIAwfuRp0053siIUft');
       // Use an existing Customer ID if this is a returning customer.
@@ -34,14 +34,32 @@ const queriesResolvers = {
           {customer: customer.id},
           {apiVersion: '2022-08-01'}
       );
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: Math.round(total * 10),
-        currency: 'cad',
-        customer: customer.id,
-        automatic_payment_methods: {
-          enabled: true,
-        },
-      });
+      let paymentIntent
+      if (idClient) {
+        //get email
+        const client = await clients.findOneById(idClient);
+        const email = client.email;
+        //create payment intent
+        paymentIntent = await stripe.paymentIntents.create({
+          amount: Math.round(total * 10),
+          currency: 'cad',
+          customer: customer.id,
+          receipt_email: email,
+          automatic_payment_methods: {
+            enabled: true,
+          },
+        });
+      } else {
+        paymentIntent = await stripe.paymentIntents.create({
+          amount: Math.round(total * 10),
+          currency: 'cad',
+          customer: customer.id,
+          automatic_payment_methods: {
+            enabled: true,
+          },
+        });
+      }
+
       return {
         code: 200,
         message: "Stripe data retrieved",
@@ -53,11 +71,11 @@ const queriesResolvers = {
         }
       }
     },
-    searchStores: async (_, {search,idClient}, {dataSources: {stores,clients}}) => {
-      const client=await clients.findOneById(idClient);
+    searchStores: async (_, {search, idClient}, {dataSources: {stores, clients}}) => {
+      const client = await clients.findOneById(idClient);
       const clientCoordinates = await getCoordinates(client.address);
-      const coordinatesArray= [clientCoordinates.lng, clientCoordinates.lat]
-      const result = await stores.searchStores(search,coordinatesArray);
+      const coordinatesArray = [clientCoordinates.lng, clientCoordinates.lat]
+      const result = await stores.searchStores(search, coordinatesArray);
       if (result) {
         return result
       }
@@ -84,11 +102,11 @@ const queriesResolvers = {
       }
       return []
     },
-    getStoresByCategory: async (_, {category,idClient}, {dataSources: {stores,clients}}) => {
-      const client=await clients.findOneById(idClient);
+    getStoresByCategory: async (_, {category, idClient}, {dataSources: {stores, clients}}) => {
+      const client = await clients.findOneById(idClient);
       const clientCoordinates = await getCoordinates(client.address);
-      const coordinatesArray= [clientCoordinates.lng, clientCoordinates.lat]
-      const result = await stores.getStoresByCategory(category,coordinatesArray);
+      const coordinatesArray = [clientCoordinates.lng, clientCoordinates.lat]
+      const result = await stores.getStoresByCategory(category, coordinatesArray);
       if (result) {
         return {
           code: 200,
