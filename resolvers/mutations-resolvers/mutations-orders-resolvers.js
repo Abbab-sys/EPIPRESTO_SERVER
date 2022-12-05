@@ -105,7 +105,7 @@ const mutationsOrdersResolvers = {
 
   updateOrderStatus: async (parent, {storeId, orderId, newStatus}, {dataSources: {orders, stores, clients}}) => {
     const orderQuery = {_id: new ObjectId(orderId)};
-    const subOrderQuery = {_id: new ObjectId(orderId)};
+    const subOrderQuery = {_id: new ObjectId(orderId), "subOrdersStatus.idStore": new ObjectId(storeId)};
 
     const store = await stores.collection.findOne({_id: new ObjectId(storeId)})
 
