@@ -14,4 +14,11 @@ export default class VerificationTokensSource extends MongoDataSource {
         });
         return insertedId;
     }
+    async createClientToken(clientId) {
+        const {insertedId} = await this.collection.insertOne({
+            relatedVendorId: null,
+            relatedClientId: clientId,
+        });
+        return insertedId;
+    }
 }

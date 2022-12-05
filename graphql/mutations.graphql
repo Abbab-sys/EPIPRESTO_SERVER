@@ -1,8 +1,8 @@
 type Mutation{
     vendorSignUp(accountInput:VendorAccountInput):HttpResponse!
     clientSignUp(accountInput:ClientAccountInput):HttpResponse!
-    verifyVendorAccount(token:String!):VendorAccountResponse!
-    #    verifyClientAccount(token:String!):ClientAccountResponse!
+    verifyAccount(token:String!):AccountResponse!
+    verifyClientAccount(token:String!):ClientAccountResponse!
 
     synchronizeWoocommerceStore(woocommerceCreds:WoocommerceCredentials!):HttpResponse!
     synchronizeShopifyStore(shopifyCreds:ShopifyCredentials!):HttpResponse!
@@ -29,3 +29,5 @@ type Mutation{
 
     sendMessageToChat(message:MessageInput!):HttpResponse!
 }
+
+union AccountResponse = VendorAccountResponse | ClientAccountResponse

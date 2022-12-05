@@ -1,13 +1,6 @@
-import {getWooCommerceProductsWithCredentials} from "../sync/woocommerce/SyncWoocommerce.js";
-import {
-    graphqlUpdateProductFields,
-    graphqlUpdateStoreFields,
-    graphqlUpdateVendorAccountFields
-} from "./updates-accepted-fields.js";
 import {mutationsUpdatesResolvers} from "./mutations-resolvers/mutations-updates-resolvers.js";
 import {mutationsSyncResolvers} from "./mutations-resolvers/mutations-sync-resolvers.js";
 import {mutationsProductsManagementResolvers} from "./mutations-resolvers/mutations-products-management-resolvers.js";
-import * as nodemailer from 'nodemailer';
 import {sendConfirmationEmail} from "../email/SendConfirmationEmail.js";
 import {ObjectId} from "mongodb";
 import {mutationsOrdersResolvers} from "./mutations-resolvers/mutations-orders-resolvers.js";
@@ -36,11 +29,11 @@ const mutationsResolvers = {
                 return {code: 406, message: e.message}
             }
         },
-        clientSignUp: async (parent, {accountInput}, {dataSources: {clients}}) => {
+        clientSignUp: async (parent, {accountInput}, {dataSources: {clients,verificationTokens}}) => {
             try {
                 const newClientAccount = await clients.signUp(accountInput)
-                // const newToken = await verificationTokens.createVendorToken(newVendorAccount._id)
-                // sendConfirmationEmail(newVendorAccount.email, newToken.toString())
+                const newToken = await verificationTokens.createClientToken(newClientAccount._id)
+                sendConfirmationEmail(newClientAccount.email, newToken.toString())
                 return {
                     code: 200,
                     message: "Client account created successfully",
@@ -50,7 +43,7 @@ const mutationsResolvers = {
             }
 
         },
-        verifyVendorAccount: async (parent, {token}, {dataSources: {vendors, verificationTokens}}) => {
+        verifyAccount: async (parent, {token}, {dataSources: {vendors,clients, verificationTokens}}) => {
             const {relatedVendorId, relatedClientId} = await verificationTokens.findOneById(token)
             if (relatedVendorId) {
                 const vendorAccount = await vendors.findOneById(relatedVendorId)
@@ -67,7 +60,22 @@ const mutationsResolvers = {
                 }
                 return {code: 404, message: "Inactive Token"}
             }
-         
+            if(relatedClientId){
+                const clientAccount = await clients.findOneById(relatedClientId)
+                if (clientAccount) {
+                    const query = {_id: new ObjectId(relatedClientId)};
+                    const updateValues = {$set: {verified: true}};
+                    await clients.collection.updateOne(query, updateValues)
+                    await verificationTokens.collection.deleteOne({_id: new ObjectId(token)})
+                    return {
+                        code: 200,
+                        message: "Client account verified",
+                        clientAccount: clientAccount
+                    }
+                }
+                return {code: 404, message: "Inactive Token"}
+            }
+
             return {code: 406, message: "Token not found"}
         },
         sendMessageToChat: async (parent, {message:messageInput}, {dataSources: {messages, chats,stores,clients}}) => {
