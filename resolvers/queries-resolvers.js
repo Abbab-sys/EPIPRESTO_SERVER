@@ -74,7 +74,6 @@ const queriesResolvers = {
           const tagsMatch = product.tags.some((tag) => tag.match(regex));
           return product.title.match(regex) || product.brand.match(regex) || tagsMatch
         } catch (e) {
-          console.log(product)
           return false
         }
 

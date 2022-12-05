@@ -4,6 +4,7 @@ import { subscribeToProductUpdateWebHook } from "../../sync/shopify/updateProduc
 import {subscribeToProductCreateWebHook} from "../../sync/shopify/createProduct.js";
 import { sendBulkOperationMutation } from "../../sync/shopify/SyncAllProducts.js";
 import {syncWooCommerceProducts} from "../../sync/woocommerce/SyncWoocommerce.js";
+
 const mutationsSyncResolvers = {
 
     synchronizeWoocommerceStore: async (parent, args, {user,client, dataSources: {stores}}) => {
@@ -20,9 +21,8 @@ const mutationsSyncResolvers = {
 
             const store = await stores.getStoreById(user.storeId)
 
-            await syncWooCommerceProducts(client,store) //return error code if not working
+            await syncWooCommerceProducts(client,store)
 
-            //TODO RETURN ERRORS IF NOT WORKING FOR EACH AWAIT ABOVE
             return {
                 code: 200,
                 message: "Woocommerce Store ready to be synchronized"
@@ -43,15 +43,15 @@ const mutationsSyncResolvers = {
             await testShopifyRequest(shopDomain, apiToken)
             await stores.addShopifySyncToStore(user.storeId, apiToken, shopDomain)
 
-            //Sync ALL products into our DB
+            //Sync ALL products into our DB the first time the store is synchronized
             await sendBulkOperationMutation(shopDomain, apiToken, user.storeId)
 
             //Subscribe to product update webhook
             await subscribeToProductUpdateWebHook(shopDomain, apiToken, user.storeId)
-
+            
+            //Subscribe to product create webhook
             await subscribeToProductCreateWebHook(shopDomain, apiToken, user.storeId)
 
-            //TODO: Subscribe to product delete webhook
 
 
             await stores.updateStoreById(user.storeId, {

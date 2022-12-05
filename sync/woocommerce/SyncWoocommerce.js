@@ -66,20 +66,17 @@ async function syncWooCommerceProducts(mongoClient, store) {
       page++;
     } while (data.headers["x-wp-totalpages"] >= page);
 
-    console.log("Woocommerce synchronized for the first time");
   } else {
     data = await api.get("products", {
       per_page: 100,
       modified_after: store.lastWoocoommerceSyncDate, //If a product is created, this field will have the creation date as value
       dates_are_gmt: true,
     });
-    console.log("Woocommece store sync");
   }
 
 
   //if data.data is empty, it means that there are no updated products
   if (data.data.length === 0) {
-    console.log("no updated products");
     await storesSource.updateStoreById(store._id, {
       lastWoocoommerceSyncDate: new Date().toISOString().slice(0, 19),
     });
@@ -172,13 +169,11 @@ async function processProduct(
 
   if (existingProducts.length !== 0) {
     productId = existingProducts[0]._id;
-    console.log("WOOCOMMERCE : PRODUCT EXISTS", productId);
     await productsSource.collection.updateOne(
       { _id: productId },
       { $set: newProductData }
     );
   } else {
-    console.log("WOOCOMMERCE : NEW PRODUCT");
     productId = await productsSource.createProduct({
       ...newProductData,
       variantsIds: [],
@@ -235,13 +230,11 @@ async function processProductVariant(
 
   if (existingProductVariants.length !== 0) {
     productVariantId = existingProductVariants[0]._id;
-    console.log("WOOCOMMERCE: PRODUCT VARIANTE EXISTS", productVariantId);
     await productsVariantsSource.collection.updateOne(
       { _id: productVariantId },
       { $set: newProductVariantData }
     );
   } else {
-    console.log("WOOCOMMERCE - NEW PRODUCT VARIANT");
     productVariantId = await productsVariantsSource.createProductVariant({
       ...newProductVariantData,
     });

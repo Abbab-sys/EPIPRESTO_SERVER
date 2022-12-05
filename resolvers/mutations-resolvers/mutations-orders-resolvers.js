@@ -134,11 +134,9 @@ const mutationsOrdersResolvers = {
       const order = await orders.collection.findOne(orderQuery)
       const clientId = order.relatedClientId
       const client = await clients.collection.findOne({_id: new ObjectId(clientId)})
-      //get client email
       const clientEmail = client.email
-      //get order number
       const orderNumber = order.orderNumber
-      //get order status
+      
       switch (newStatus) {
         case "WAITING_CONFIRMATION":
           newStatus = "Waiting confirmation"

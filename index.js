@@ -145,8 +145,14 @@ app.use(
     }),
 );
 const PORT = 4000;
-// Now that our HTTP server is fully set up, we can listen to it.
 httpServer.listen(PORT, () => {
     console.log(`Server is now running on http://localhost:${PORT}/graphql`);
+
+    //Each 30 minutes, call syncInventory to synchronise WooCommerce inventory with our DB
+    nodeCron.schedule('*/30 * * * *', async () => {
+        await syncInventory()
+    }
+    )
+    
 });
 
