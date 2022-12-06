@@ -202,14 +202,16 @@ const outputsResolvers = {
       return subTotal
     },
     deliveryFee: async ({productsVariantsOrdered}, _, {dataSources: {productsVariants}}) => {
-      return 10
+      return 9.99
     },
     taxs: async ({productsVariantsOrdered}, _, {dataSources: {productsVariants}}) => {
-      let taxs = 0
+      const taxRate=0.14975
+      let taxs = 9.99*taxRate
+
       for (const productVariantOrdered of productsVariantsOrdered) {
         const productVariant = await productsVariants.findOneById(productVariantOrdered.relatedProductVariantId)
         if (productVariant.taxable) {
-          taxs += productVariant.price * productVariantOrdered.quantity * 0.15
+          taxs += productVariant.price * productVariantOrdered.quantity * taxRate
         }
       }
       return taxs
