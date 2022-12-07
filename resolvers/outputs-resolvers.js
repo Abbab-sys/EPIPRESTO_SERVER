@@ -28,7 +28,13 @@ const outputsResolvers = {
           mongoProductsObjects = mongoProductsObjects.filter(product => product.published)
         }
         if (searchText) {
+          if (first === -1 || offset === -1) {
+            return mongoProductsObjects.filter(product => product.title.toLowerCase().includes(searchText.toLowerCase()))
+          }
           return mongoProductsObjects.filter(product => product.title.toLowerCase().includes(searchText.toLowerCase())).slice(offset, offset + first)
+        }
+        if (first === -1 || offset === -1) {
+          return mongoProductsObjects
         }
         return mongoProductsObjects.slice(offset, offset + first)
       }
@@ -37,7 +43,13 @@ const outputsResolvers = {
         mongoProductsObjects = mongoProductsObjects.filter(product => product.published)
       }
       if (searchText) {
+        if (first === -1 || offset === -1) {
+          return mongoProductsObjects.filter(product => product.title.toLowerCase().includes(searchText.toLowerCase()))
+        }
         return mongoProductsObjects.filter(product => product.title.toLowerCase().includes(searchText.toLowerCase())).slice(offset, offset + first)
+      }
+      if (first === -1 || offset === -1) {
+        return mongoProductsObjects
       }
       return mongoProductsObjects.slice(offset, offset + first)
 
@@ -161,7 +173,13 @@ const outputsResolvers = {
       })
       if (searchText) {
         const filteredVariants = allVariants.filter(variant => variant.displayName.toLowerCase().includes(searchText.toLowerCase()))
+        if (offset === -1 || first === -1) {
+          return filteredVariants
+        }
         return filteredVariants.slice(offset, offset + first)
+      }
+      if (offset === -1 || first === -1) {
+        return allVariants
       }
       return allVariants.slice(offset, offset + first)
     },
@@ -205,8 +223,8 @@ const outputsResolvers = {
       return 9.99
     },
     taxs: async ({productsVariantsOrdered}, _, {dataSources: {productsVariants}}) => {
-      const taxRate=0.14975
-      let taxs = 9.99*taxRate
+      const taxRate = 0.14975
+      let taxs = 9.99 * taxRate
 
       for (const productVariantOrdered of productsVariantsOrdered) {
         const productVariant = await productsVariants.findOneById(productVariantOrdered.relatedProductVariantId)
