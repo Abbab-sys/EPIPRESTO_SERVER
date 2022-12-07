@@ -323,6 +323,10 @@ function validateTags(tags){
     if(tags === null || tags === ""){
         return [];
     }else{
+        //if tags is string, split it into an array
+        if(typeof tags === "string"){
+            tags=tags.split(",");
+        }
         return tags;
     }
 }

@@ -153,7 +153,7 @@ function validateTags(tags){
   if(tags === null || tags === ""){
       return [];
   }else{
-      return tags;
+      return tags.split(",");
   }
 }
 

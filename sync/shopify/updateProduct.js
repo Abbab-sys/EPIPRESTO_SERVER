@@ -170,6 +170,10 @@ function validateTags(tags){
   if(tags === null || tags === ""){
       return [];
   }else{
+      //if tags is a string, we split it into an array
+      if(typeof tags === "string"){
+          return tags.split(",");
+      }
       return tags;
   }
 }
