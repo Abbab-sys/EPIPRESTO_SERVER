@@ -1,0 +1,59 @@
+interface HttpResponseInterface {
+    code:Int!
+    message:String!
+}
+
+type HttpResponse implements HttpResponseInterface{
+    code:Int!
+    message:String!
+}
+type ProductResponse implements HttpResponseInterface{
+    code:Int!
+    message:String!
+    product:Product
+}
+type StoreResponse implements HttpResponseInterface{
+    code:Int!
+    message:String!
+    store:Store
+}
+type StoresResponse implements HttpResponseInterface{
+    code:Int!
+    message:String!
+    stores:[Store!]
+}
+
+type VendorAccountResponse implements HttpResponseInterface{
+    code:Int!
+    message:String!
+    vendorAccount:VendorAccount
+}
+type ClientAccountResponse implements HttpResponseInterface{
+    code:Int!
+    message:String!
+    clientAccount:ClientAccount
+}
+type ProductVariantResponse implements HttpResponseInterface{
+    code:Int!
+    message:String!
+    productVariant:ProductVariant
+}
+
+type OrderResponse implements HttpResponseInterface{
+    code:Int!
+    message:String!
+    order:Order
+}
+type StripeResponse implements HttpResponseInterface{
+    code:Int!
+    message:String!
+    stripe:Stripe
+}
+
+type AnalyticsResponse implements HttpResponseInterface{
+    code:Int!
+    message:String!
+    topProducts:[ProductVariant!]
+    totalSales:Float
+    totalOrders:Int
+}

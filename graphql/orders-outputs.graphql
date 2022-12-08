@@ -1,0 +1,78 @@
+type Order{
+    _id:ID!
+    orderNumber:String!
+    productsVariantsOrdered:[ProductVariantOrdered!]!
+    relatedVendors:[Store!]!
+    relatedClient:ClientAccount!
+    relatedChats:[Chat!]!
+    logs:[OrderLog!]!
+    subOrdersStatus:[SubOrdersLog!]!
+    subTotal:Float!
+    deliveryFee:Float!
+    taxs:Float!
+    paymentMethod:PaymentMethod!
+    }
+type OrderLog{
+    status:OrderStatus
+    time:Date
+}
+
+type SubOrdersLog{
+    relatedStore:Store!
+    status:OrderStatus!
+    time:Date
+}
+
+enum PaymentMethod{
+    CASH
+    MASTER_CARD
+    VISA
+    AMERICAN_EXPRESS
+    APPLE_PAY
+    GOOGLE_PAY
+    PAYPAL
+    BITCOIN
+
+}
+enum OrderStatus{
+    WAITING_CONFIRMATION,
+    CONFIRMED,
+    IN_DELIVERY,
+    DELIVERED,
+    CLOSED
+}
+
+
+type ProductVariantOrdered{
+    relatedProductVariant:ProductVariant!
+    quantity:Int!
+    discount:Float
+}
+
+type Chat{
+    _id:ID!
+    relatedClient:ClientAccount!
+    relatedVendor:Store!
+    relatedOrder:Order!
+    messages:[Message!]!
+}
+enum MessageStatus{
+    SENT
+    RECEIVED
+    READ
+}
+enum Role{
+    ADMIN
+    CLIENT
+    VENDOR
+}
+type Message{
+    _id:ID!
+    relatedChat:Chat!
+    message:String!
+    date:Date!
+    role:Role!
+    status:MessageStatus!
+}
+
+scalar Date

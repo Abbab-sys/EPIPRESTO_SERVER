@@ -1,0 +1,57 @@
+input UpdateProductVariant{
+    variantId: ID
+    variantTitle:String
+    availableForSale:Boolean
+    price:Float
+    sku:String
+    taxable:Boolean
+    imgSrc:String
+    byWeight:Boolean
+    stock:Int
+}
+input UpdateProduct{
+    title:String
+    brand:String
+    published:Boolean
+    description:String
+    tags:[String!]
+    imgSrc:String
+}
+input UpdateStore{
+    name:String
+    address:String
+    disponibilities:[DisponibilityInput!]
+    isPaused:Boolean
+}
+input DisponibilityInput{
+    day:Day!
+    activesHours:[ActivesHoursInput!]!
+}
+enum Day{
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY
+}
+input ActivesHoursInput{
+    openingHour:String!
+    endingHour:String!
+}
+input UpdateVendorAccount{
+    email:String
+    password:String
+    phone:String
+    username:String
+}
+input UpdateClientAccount{
+    firstName:String
+    lastName:String
+    email:String
+    password:String
+    phone:String
+    username:String
+    address:String
+}
