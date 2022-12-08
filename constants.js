@@ -1,0 +1,1 @@
+export const SHOPIFY_CALLBACK_URL = 'http://44.202.98.51:3001'; //FOR WEBHOOKS

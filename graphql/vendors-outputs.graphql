@@ -1,0 +1,71 @@
+type VendorAccount{
+    _id:ID!
+    email:String!
+    password:String!
+    phone:String!
+    username:String!
+    store:Store!
+}
+type Store{
+    _id:ID!
+    name:String!
+    address:String!
+    relatedVendor:VendorAccount!
+    isOpen:Boolean!
+    isPaused:Boolean!
+    products(first:Int!,offset:Int!,searchText:String,filterAvailable:Boolean):[Product!]!
+    disponibilities:[Disponibility!]!
+    shopCategory:String
+    orders(idOrder:ID):[Order!]!
+    chats:[Chat!]!
+    isAdmin:Boolean
+}
+
+type Disponibility{
+    day:Day!
+    activesHours:[ActivesHours!]!
+}
+type ActivesHours{
+    openingHour:String!
+    endingHour:String!
+}
+enum ApiType{
+    SHOPIFY,
+    WOOCOMMERCE
+}
+type Product{
+    _id:ID!
+    relatedStore:Store!
+    title:String!
+    description:String
+    brand:String
+    published:Boolean!
+    tags:[String!]!
+    imgSrc:String!
+    variants(first:Int,offset:Int!,searchText:String,,filterAvailable:Boolean):[ProductVariant!]!
+}
+type ProductVariant{
+    _id:ID!
+    relatedProduct:Product!
+    relatedStore:Store!
+    displayName:String!
+    variantTitle:String!
+    availableForSale:Boolean!
+    price:Float!
+    stock:Float!
+    sku:String
+    taxable:Boolean!
+    imgSrc:String!
+    byWeight:Boolean!
+}
+
+enum ShopCategory{
+    FRUITS_AND_VEGETABLES
+    FISH_AND_SEAFOOD
+    HEALTHY
+    KETO
+    BAKERY
+    WORLD_PRODUCTS
+    BUTCHER
+    OTHER
+}
